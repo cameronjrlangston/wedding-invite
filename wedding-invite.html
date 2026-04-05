@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cam & Gem — Wedding</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+
+    /* ── GLOBAL ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    /* ══════════════════════════════════════════
+       BLOCK 1 — POSTCARD
+    ══════════════════════════════════════════ */
+
+    .wedding-layout {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      padding: 2rem 2rem 3.5rem;
+      min-height: 520px;
+      perspective: 1200px;
+    }
+
+    .postcard-scene { display: flex; justify-content: center; align-items: flex-start; flex-shrink: 0; }
+    .postcard-scene__inner { position: relative; }
+
+    .postcard {
+      width: 300px;
+      height: 450px;
+      position: relative;
+      transform-style: preserve-3d;
+      cursor: default;
+      opacity: 0;
+    }
+
+    .postcard--interactive { cursor: pointer; }
+
+    @keyframes pc-glide-in {
+      0%   { transform: translateY(-120vh) rotate(-8deg); opacity: 0; }
+      60%  { opacity: 1; }
+      85%  { transform: translateY(18px) rotate(1.5deg); }
+      92%  { transform: translateY(-6px) rotate(-0.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+    }
+
+    @keyframes pc-flip-reveal {
+      0%   { transform: rotateY(0deg)   rotate(0deg); }
+      30%  { transform: rotateY(20deg)  rotate(1.5deg); }
+      50%  { transform: rotateY(90deg)  rotate(2deg); }
+      70%  { transform: rotateY(160deg) rotate(1deg); }
+      85%  { transform: rotateY(190deg) rotate(-1deg); }
+      100% { transform: rotateY(180deg) rotate(0deg); }
+    }
+
+    .postcard__face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+    }
+
+    .postcard__face--back { transform: rotateY(-180deg); }
+
+    .postcard__face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .postcard-hint {
+      position: absolute;
+      bottom: -42px; left: 0; right: 0;
+      text-align: center;
+      font-size: 12px; color: #999;
+      font-family: sans-serif;
+      letter-spacing: 0.04em;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none; user-select: none;
+    }
+
+    .postcard-hint--visible { opacity: 1; }
+
+    .got-mail {
+      position: absolute;
+      top: 60%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 12px; color: #999;
+      font-family: sans-serif;
+      letter-spacing: 0.04em;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none; user-select: none;
+      white-space: nowrap;
+      display: flex; align-items: baseline; gap: 0; margin: 0;
+    }
+
+    .got-mail--visible { opacity: 1; }
+
+    @keyframes dot-fade {
+      0%, 80%, 100% { opacity: 0; }
+      40% { opacity: 1; }
+    }
+
+    .got-mail__dot {
+      display: inline-block;
+      width: 1.2px; height: 1.2px;
+      border-radius: 50%;
+      background: #999;
+      margin-left: 3px;
+      vertical-align: baseline;
+      position: relative; top: -1px;
+      animation: dot-fade 1.2s infinite ease-in-out;
+    }
+
+    .got-mail__dot:nth-child(2) { animation-delay: 0.4s; }
+    .got-mail__dot:nth-child(3) { animation-delay: 0.8s; }
+
+    .invite-panel {
+      font-family: 'Source Sans Pro', sans-serif;
+      max-width: 420px;
+      opacity: 0;
+      transform: translateX(24px);
+      transition: opacity 0.9s ease 0.4s, transform 0.9s ease 0.4s;
+      text-align: left;
+    }
+
+    .invite-panel.visible { opacity: 1; transform: translateX(0); }
+
+    .wedding-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400; letter-spacing: 0.08em;
+      text-align: left; color: #1a1a1a;
+      margin: 0 0 0.3rem; line-height: 1.3;
+    }
+
+    .invite-section { padding: 0 0 1.5rem 0; border-top: 0.5px solid #d8d8d8; border-bottom: 0.5px solid #d8d8d8; }
+
+    .invite-body { font-size: 15px; font-weight: 300; line-height: 1.8; color: #222; margin-bottom: 1.5rem; text-align: left; }
+
+    .invite-details { padding-left: 1rem; border-left: 2px solid #074485; }
+
+    .detail-row { display: flex; gap: 8px; font-size: 14px; line-height: 1.9; color: #222; }
+    .detail-label { font-weight: 600; color: #555; min-width: 80px; }
+    .detail-value { font-weight: 300; }
+
+    .directions-btn {
+      margin-top: 1.25rem;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 14px; font-weight: 600;
+      color: #fff; background: #074485;
+      border: none; border-radius: 4px;
+      padding: 9px 18px; cursor: pointer;
+      text-decoration: none; letter-spacing: 0.03em;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .directions-btn:hover { background: #053570; transform: translateY(-1px); }
+    .directions-btn:active { transform: translateY(0); }
+    .directions-btn svg { flex-shrink: 0; }
+
+    /* ══════════════════════════════════════════
+       BLOCK 2 — POLAROID SWIPER
+    ══════════════════════════════════════════ */
+
+    .pol-section {
+      min-height: 750px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+      padding: 0;
+      border-bottom: 0.5px solid #d8d8d8;
+      overflow: hidden;
+    }
+
+    .pol-section.visible { opacity: 1; transform: translateY(0); }
+
+    .pol-text-block { text-align: center; padding: 0 1rem 1.5rem; }
+
+    .polaroid-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400; letter-spacing: 0.08em;
+      text-align: center; color: #1a1a1a;
+      margin: 0 0 0.3rem; line-height: 1.3;
+    }
+
+    .pol-divider { width: 40px; height: 0.5px; background: #d8d8d8; margin: 1rem auto 1.2rem; }
+
+    .pol-body {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 15px; font-weight: 300; line-height: 1.8; color: #222;
+      margin: 0 auto; text-align: center; max-width: 600px;
+    }
+
+    .polaroid-section { padding: 2rem 0 0; display: flex; flex-direction: column; align-items: center; overflow: hidden; user-select: none; }
+
+    .deck-viewport {
+      width: 100%; max-width: 420px; height: 380px;
+      position: relative; display: flex; align-items: center; justify-content: center;
+      cursor: grab;
+    }
+
+    .deck-viewport:active { cursor: grabbing; }
+
+    .polaroid-card {
+      position: absolute; width: 260px;
+      background: #faf9f6; padding: 14px 14px 52px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.13), 0 1px 4px rgba(0,0,0,0.07);
+      border-radius: 2px;
+      transition: transform 0.45s cubic-bezier(0.34, 1.26, 0.64, 1), opacity 0.35s ease;
+      will-change: transform, opacity; touch-action: none;
+    }
+
+    .polaroid-card .photo { width: 100%; aspect-ratio: 1/1; background: #e8e4de; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .polaroid-card .photo img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+
+    .polaroid-card .caption {
+      height: 52px; display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.06em;
+      color: #555; text-align: center; padding: 0 4px;
+    }
+
+    .polaroid-swipe-hint {
+      margin-top: 2.2rem; display: flex; align-items: center; gap: 10px;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      font-family: sans-serif; font-size: 12px; letter-spacing: 0.04em; color: #999;
+    }
+
+    .polaroid-swipe-hint.visible { opacity: 1; transform: translateY(0); }
+
+    .polaroid-swipe-hint .p-arrow span { display: block; width: 18px; height: 1px; background: #bbb; position: relative; }
+
+    .polaroid-swipe-hint .p-arrow span::after {
+      content: ''; position: absolute;
+      right: 0; top: -3px; width: 6px; height: 6px;
+      border-top: 1px solid #bbb; border-right: 1px solid #bbb;
+      transform: rotate(45deg);
+    }
+
+    .polaroid-swipe-hint .p-arrow.left span::after {
+      right: auto; left: 0;
+      border-top: 1px solid #bbb; border-left: 1px solid #bbb; border-right: none;
+      transform: rotate(-45deg);
+    }
+
+    .polaroid-dots { display: flex; gap: 6px; margin-top: 1rem; opacity: 0; transition: opacity 0.5s ease 0.2s; }
+    .polaroid-dots.visible { opacity: 1; }
+
+    .polaroid-dots .dot { width: 5px; height: 5px; border-radius: 50%; background: #ccc; transition: background 0.3s ease, transform 0.3s ease; }
+    .polaroid-dots .dot.active { background: #888; transform: scale(1.4); }
+
+    .polaroid-card.is-dragging { transition: none !important; }
+    .polaroid-card.fly-left  { transform: translateX(-130%) rotate(-18deg) !important; opacity: 0; }
+    .polaroid-card.fly-right { transform: translateX(130%)  rotate(18deg)  !important; opacity: 0; }
+
+    /* ══════════════════════════════════════════
+       BLOCK 3 — SUNDIAL SCHEDULE
+    ══════════════════════════════════════════ */
+
+    .sd-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+      padding: 0 0 2rem 0;
+      border-bottom: 0.5px solid #d8d8d8;
+      overflow: hidden;
+    }
+
+    .sd-section.visible { opacity: 1; transform: translateY(0); }
+
+    .sd-inner { font-family: 'Source Sans Pro', sans-serif; max-width: 520px; margin: 0 auto; padding: 0 1rem; }
+
+    .sd-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400; letter-spacing: 0.08em;
+      text-align: center; color: #1a1a1a;
+      margin: 0 0 0.3rem; line-height: 1.3;
+    }
+
+    .sd-divider { width: 40px; height: 0.5px; background: #d8d8d8; margin: 1rem auto 1.5rem; }
+
+    .sd-dial-wrap { position: relative; width: 100%; max-width: 340px; margin: 0 auto 1.5rem; }
+    .sd-dial-wrap svg { display: block; width: 100%; }
+
+    .sd-detail {
+      height: 110px; overflow: hidden; text-align: center;
+      padding: 0.75rem 1rem; margin: 0 auto 1.5rem; max-width: 340px;
+      border-top: 0.5px solid #d8d8d8; border-bottom: 0.5px solid #d8d8d8;
+    }
+
+    .sd-detail-time  { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.1em; color: #074485; margin: 0 0 3px; }
+    .sd-detail-title { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 500; color: #1a1a1a; margin: 0 0 4px; }
+    .sd-detail-desc  { font-size: 13px; font-weight: 300; color: #555; line-height: 1.6; margin: 0; }
+    .sd-detail-loc   { font-size: 12px; color: #888; margin: 4px 0 0; font-style: italic; }
+
+    .sd-list { max-width: 340px; margin: 0 auto; border-top: 0.5px solid #d8d8d8; }
+    .sd-list-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; }
+
+    .sd-list-item { display: flex; align-items: baseline; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid #ede9e2; cursor: pointer; }
+    .sd-list-item.active .sd-list-time,
+    .sd-list-item.active .sd-list-name { color: #074485; }
+
+    .sd-list-time { font-family: 'Cinzel', serif; font-size: 10px; color: #999; letter-spacing: 0.05em; white-space: nowrap; transition: color 0.2s; }
+    .sd-list-name { font-family: 'Cinzel', serif; font-size: 10px; color: #333; line-height: 1.3; transition: color 0.2s; }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════ */
+
+    @media (max-width: 700px) {
+      .wedding-layout {
+        flex-direction: column; align-items: center;
+        padding: 2rem 1.25rem 3rem;
+        min-height: unset; gap: 2.5rem; perspective: none;
+      }
+      .invite-panel { max-width: 100%; transform: translateY(20px); padding-top: 1.5rem; }
+      .invite-panel.visible { transform: translateY(0); }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       BLOCK 1 — POSTCARD
+  ══════════════════════════════════════════ -->
+
+  <div class="wedding-layout">
+    <div class="postcard-scene">
+      <div class="postcard-scene__inner">
+        <p class="got-mail" id="gotMail">
+          you've got mail
+          <span class="got-mail__dot"></span>
+          <span class="got-mail__dot"></span>
+          <span class="got-mail__dot"></span>
+        </p>
+        <div class="postcard" id="postcard">
+          <div class="postcard__face postcard__face--front">
+            <img src="https://www.dropbox.com/scl/fi/t4wyk1voru8vatkz1xjh1/postcard-front.jpg?rlkey=aka3qmf1rg88s8l7k65tttz4s&st=08g20slt&dl=1" alt="Wedding postcard front" />
+          </div>
+          <div class="postcard__face postcard__face--back">
+            <img src="https://www.dropbox.com/scl/fi/4cqgsfi8zxspohfpo6ekm/postcard-back.jpg?rlkey=5ukgmq8z442tjdkbb22y8fwh8&st=8rckv647&dl=1" alt="Wedding postcard back" />
+          </div>
+        </div>
+        <p class="postcard-hint" id="postcard-hint">click to flip</p>
+      </div>
+    </div>
+
+    <div class="invite-panel" id="invitePanel">
+      <h1 class="wedding-heading">We're Getting Married!</h1>
+      <div class="invite-section">
+        <p class="invite-body">
+          We are so excited to invite you to celebrate this special day with us. Our ceremony will take place at St. Anne's Church followed by a Picnic reception in the Church's Gated Garden. We have planned a version of our perfect day filled with church, family, friends, food, &amp; more. We cannot wait to share it with you.
+        </p>
+        <div class="invite-details">
+          <div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">June 20, 2026</span></div>
+          <div class="detail-row"><span class="detail-label">Time</span><span class="detail-value">12:00pm</span></div>
+          <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value">St. Anne's Church, E14 8HH</span></div>
+          <div class="detail-row"><span class="detail-label">Reception</span><span class="detail-value">Picnic in the Gated Garden</span></div>
+        </div>
+        <a class="directions-btn" href="https://maps.app.goo.gl/6kfBurghQ1daQck59" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          Get directions
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       BLOCK 2 — POLAROID SWIPER
+  ══════════════════════════════════════════ -->
+
+  <div class="pol-section" id="polSection">
+    <div class="pol-text-block">
+      <h2 class="polaroid-heading">Our Story So Far</h2>
+      <div class="pol-divider"></div>
+      <p class="pol-body">July 21st 2024 — After a brief introduction the previous week, we by chance sat next to one another during refreshments after the church service on Sunday. We had been in the same room every week for a whole year without meeting. There was a spark from the first conversation, we went on our first date 2 days later, became official 3 weeks after that and spent a lot of time together over the next months. Below are some of our favourite memories so far...</p>
+    </div>
+    <div class="polaroid-section" id="polaroidSection">
+      <div class="deck-viewport" id="deckViewport"></div>
+      <div class="polaroid-dots" id="polaroidDots"></div>
+      <div class="polaroid-swipe-hint" id="swipeHint">
+        <div class="p-arrow left"><span></span></div>
+        swipe to view more
+        <div class="p-arrow"><span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       BLOCK 3 — SUNDIAL SCHEDULE
+  ══════════════════════════════════════════ -->
+
+  <div class="sd-section" id="sdSection">
+    <div class="sd-inner">
+      <h2 class="sd-heading">The Day</h2>
+      <div class="sd-divider"></div>
+      <div class="sd-dial-wrap">
+        <svg id="sdSvg" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="sdDialClip"><circle cx="170" cy="170" r="130"/></clipPath></defs>
+          <circle cx="170" cy="170" r="130" fill="#e8dfc8" stroke="#c4a96a" stroke-width="1"/>
+          <image id="sdImg" href="" x="40" y="40" width="260" height="260" clip-path="url(#sdDialClip)" preserveAspectRatio="xMidYMid slice" style="display:none"/>
+          <g id="sdPlaceholder">
+            <circle cx="170" cy="170" r="130" fill="#e8dfc8"/>
+            <g stroke="#c4a96a" stroke-width="0.5" opacity="0.4">
+              <line x1="170" y1="48" x2="170" y2="292"/>
+              <line x1="48" y1="170" x2="292" y2="170"/>
+              <line x1="78" y1="78" x2="262" y2="262"/>
+              <line x1="262" y1="78" x2="78" y2="262"/>
+            </g>
+            <circle cx="170" cy="170" r="80" fill="none" stroke="#c4a96a" stroke-width="0.5" opacity="0.3"/>
+            <circle cx="170" cy="170" r="44" fill="none" stroke="#c4a96a" stroke-width="0.5" opacity="0.3"/>
+            <text x="170" y="162" text-anchor="middle" font-family="Cinzel,serif" font-size="11" fill="#a08040" opacity="0.6" letter-spacing="0.1em">YOUR</text>
+            <text x="170" y="176" text-anchor="middle" font-family="Cinzel,serif" font-size="11" fill="#a08040" opacity="0.6" letter-spacing="0.1em">SUNDIAL</text>
+            <text x="170" y="190" text-anchor="middle" font-family="Cinzel,serif" font-size="11" fill="#a08040" opacity="0.6" letter-spacing="0.1em">IMAGE</text>
+          </g>
+          <circle cx="170" cy="170" r="130" fill="none" stroke="#c4a96a" stroke-width="1.5"/>
+          <line id="sdShadow" x1="170" y1="170" x2="170" y2="48" stroke="#074485" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+          <circle cx="170" cy="170" r="10" fill="#c4a96a"/>
+          <g id="sdMarkers"></g>
+        </svg>
+      </div>
+      <div id="sdDetail" class="sd-detail">
+        <p class="sd-detail-time"  id="sdDetailTime"></p>
+        <p class="sd-detail-title" id="sdDetailTitle"></p>
+        <p class="sd-detail-desc"  id="sdDetailDesc"></p>
+        <p class="sd-detail-loc"   id="sdDetailLoc"></p>
+      </div>
+      <div class="sd-list">
+        <div class="sd-list-cols" id="sdListCols"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════════ -->
+
+  <script>
+
+    /* ── POSTCARD ── */
+    (function() {
+      var card     = document.getElementById('postcard');
+      var hint     = document.getElementById('postcard-hint');
+      var panel    = document.getElementById('invitePanel');
+      var gotMail  = document.getElementById('gotMail');
+      var currentAngle = 0, isFlipped = false, isAnimating = false;
+
+      function startAnimation() {
+        gotMail.classList.add('got-mail--visible');
+        setTimeout(function() {
+          gotMail.classList.remove('got-mail--visible');
+          card.style.animation = 'pc-glide-in 1.2s cubic-bezier(0.22,1,0.36,1) forwards';
+          card.addEventListener('animationend', function onAnim(e) {
+            if (e.animationName === 'pc-glide-in') {
+              card.style.opacity = '1';
+              setTimeout(function() {
+                card.style.animation = 'pc-flip-reveal 1s cubic-bezier(0.4,0,0.2,1) forwards';
+                panel.classList.add('visible');
+              }, 1000);
+            }
+            if (e.animationName === 'pc-flip-reveal') {
+              card.removeEventListener('animationend', onAnim);
+              card.style.animation = '';
+              currentAngle = 180;
+              card.style.transform = 'rotateY(180deg)';
+              card.style.transition = 'transform 0.9s cubic-bezier(0.4,0,0.2,1)';
+              card.classList.add('postcard--interactive');
+              isFlipped = true;
+              hint.classList.add('postcard-hint--visible');
+            }
+          });
+        }, 2000);
+      }
+
+      window.addEventListener('load', function() { setTimeout(startAnimation, 250); });
+
+      card.addEventListener('click', function() {
+        if (!card.classList.contains('postcard--interactive') || isAnimating) return;
+        isAnimating = true;
+        currentAngle = isFlipped ? 0 : 180;
+        card.style.transform = 'rotateY(' + currentAngle + 'deg)';
+        isFlipped = !isFlipped;
+        setTimeout(function() { isAnimating = false; }, 900);
+      });
+
+      card.addEventListener('mouseenter', function() { if (card.classList.contains('postcard--interactive')) hint.classList.add('postcard-hint--visible'); });
+      card.addEventListener('mouseleave', function() { hint.classList.remove('postcard-hint--visible'); });
+    })();
+
+    /* ── POLAROID SWIPER ── */
+    (function() {
+      var cards = [
+        { caption: "Pumpkin Patch",          src: "https://www.dropbox.com/scl/fi/hghjqfacvl7bx07yh4ug3/polaroid-1.jpg?rlkey=8rgy2joylbqac21lbuepb6r8d&st=sml541qs&raw=1" },
+        { caption: "Working at The Beehive", src: "https://www.dropbox.com/scl/fi/mjv04l6womyyi3fn4t170/polaroid-2.jpg?rlkey=fiunbn5i23l50xzxafl02m6x5&st=e0tdev9l&raw=1" },
+        { caption: "Soaking in the Sun",     src: "https://www.dropbox.com/scl/fi/yr6ohcxbomyl33pejrp3n/polaroid-3.jpg?rlkey=jzrt5r6re9fl0ts9lg6plyxdb&st=stpr1cyn&raw=1" },
+        { caption: "Engaged!",               src: "https://www.dropbox.com/scl/fi/bv5hxq2262lw9qpwzwtq1/polaroid-4.jpg?rlkey=ct3nprq4ry3r0vol0rupp8cz5&st=6n1hydmi&raw=1" },
+        { caption: "Running for the Tube",   src: "https://www.dropbox.com/scl/fi/kp5uxvj0dx3t2yt9zk8tu/polaroid-5.jpg?rlkey=7yj3xsx2ahvkis7dq8nyuo5e5&st=yonb37q1&raw=1" },
+      ];
+
+      var rotations = [-4, 2, -2, 5, -1];
+      var offsets   = [{x:0,y:0},{x:3,y:-3},{x:-4,y:2},{x:2,y:-2},{x:-2,y:4}];
+      var viewport  = document.getElementById('deckViewport');
+      var dotsEl    = document.getElementById('polaroidDots');
+      var hintEl    = document.getElementById('swipeHint');
+      var polSection = document.getElementById('polSection');
+      var current = 0, isDragging = false, startX = 0, dragDelta = 0, cardEls = [], animated = false;
+
+      function buildDeck() {
+        viewport.innerHTML = ''; cardEls = []; dotsEl.innerHTML = '';
+        cards.forEach(function(c, i) {
+          var card = document.createElement('div');
+          card.className = 'polaroid-card';
+          card.innerHTML = '<div class="photo"><img src="' + c.src + '" alt="' + c.caption + '" draggable="false"></div><div class="caption">' + c.caption + '</div>';
+          viewport.appendChild(card); cardEls.push(card);
+          var dot = document.createElement('div');
+          dot.className = 'dot' + (i === 0 ? ' active' : '');
+          dotsEl.appendChild(dot);
+        });
+        layoutCards();
+      }
+
+      function layoutCards(dragOffset) {
+        dragOffset = dragOffset || 0;
+        var n = cards.length;
+        cardEls.forEach(function(el, i) {
+          var rel = (i - current + n) % n;
+          var behindCount = rel <= Math.floor(n/2) ? rel : rel - n;
+          var zIndex = n - Math.abs(behindCount);
+          var rot = rotations[i % rotations.length];
+          var tx = offsets[i % offsets.length].x;
+          var ty = offsets[i % offsets.length].y;
+          var scale = 1, opacity = 1;
+          if (behindCount < 0 || behindCount > 2) { el.style.zIndex=0; el.style.transform='translateX(0px) rotate('+rot+'deg) scale(0.88)'; el.style.opacity=0; return; }
+          if (behindCount === 0) { tx += dragOffset; rot += dragOffset * 0.04; }
+          else if (behindCount === 1) { tx+=6; ty+=6; scale=0.955; opacity=1; }
+          else if (behindCount === 2) { tx+=12; ty+=12; scale=0.91; opacity=1; }
+          el.style.zIndex = zIndex;
+          el.style.transform = 'translate('+tx+'px,'+ty+'px) rotate('+rot+'deg) scale('+scale+')';
+          el.style.opacity = opacity;
+        });
+      }
+
+      function updateDots() { Array.from(dotsEl.children).forEach(function(d,i){ d.classList.toggle('active', i===current); }); }
+
+      function advance(direction) {
+        var top = cardEls[current];
+        top.classList.remove('is-dragging');
+        top.classList.add(direction > 0 ? 'fly-left' : 'fly-right');
+        setTimeout(function() {
+          top.classList.remove('fly-left','fly-right');
+          current = direction > 0 ? (current+1)%cards.length : (current-1+cards.length)%cards.length;
+          layoutCards(); updateDots();
+        }, 380);
+      }
+
+      function onPointerDown(e) { isDragging=true; startX=e.clientX!==undefined?e.clientX:e.touches[0].clientX; dragDelta=0; cardEls[current].classList.add('is-dragging'); }
+      function onPointerMove(e) { if(!isDragging)return; var x=e.clientX!==undefined?e.clientX:e.touches[0].clientX; dragDelta=x-startX; layoutCards(dragDelta); }
+      function onPointerUp() { if(!isDragging)return; isDragging=false; cardEls[current].classList.remove('is-dragging'); if(Math.abs(dragDelta)>60){advance(dragDelta<0?1:-1);}else{layoutCards(0);} dragDelta=0; }
+
+      viewport.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+      viewport.addEventListener('touchstart', function(e){onPointerDown(e);},{passive:true});
+      window.addEventListener('touchmove', function(e){onPointerMove(e);},{passive:true});
+      window.addEventListener('touchend', onPointerUp);
+
+      function animateCardsIn() {
+        if(animated)return; animated=true;
+        cardEls.forEach(function(el,i){ el.style.transition='none'; el.style.transform='translateY(80px) rotate('+rotations[i]+'deg) scale(0.88)'; el.style.opacity='0'; });
+        requestAnimationFrame(function() {
+          cardEls.forEach(function(el,i){ setTimeout(function(){ el.style.transition='transform 0.6s cubic-bezier(0.34,1.26,0.64,1), opacity 0.45s ease'; layoutCards(); },i*80); });
+          setTimeout(function(){ dotsEl.classList.add('visible'); hintEl.classList.add('visible'); },500);
+        });
+      }
+
+      buildDeck();
+      setTimeout(function() {
+        var obs = new IntersectionObserver(function(entries) { if(entries[0].isIntersecting){ polSection.classList.add('visible'); setTimeout(animateCardsIn,600); obs.disconnect(); } },{threshold:0});
+        obs.observe(polSection);
+      }, 2000);
+    })();
+
+    /* ── SUNDIAL SCHEDULE ── */
+    (function() {
+      var events = [
+        { time:"11:30am", title:"Guest Arrivals",        desc:"Please arrive at St Anne's Church. Ushers will be on hand to welcome you and show you to your seats.", loc:"St Anne's Church, Limehouse" },
+        { time:"12:00pm", title:"Wedding Ceremony",      desc:"The ceremony begins. Please be seated by 11:50am.", loc:"St Anne's Church (Main Church)" },
+        { time:"1:30pm",  title:"Picnic Reception",      desc:"After the ceremony, you will be guided to the gated garden where a picnic reception awaits! Enjoy food, drinks and good company.", loc:"St Anne's Church (Gated Garden)" },
+        { time:"3:00pm",  title:"Speeches",              desc:"Get your glasses ready — it's time for the speeches!", loc:"St Anne's Church (Gated Garden)" },
+        { time:"3:45pm",  title:"Cake Cutting",          desc:"Cam & Gem cut the wedding cake and it's time for sweet treats!", loc:"St Anne's Church (Gated Garden)" },
+        { time:"4:30pm",  title:"First Dance",           desc:"Let's celebrate! Join Cam & Gem on the dancefloor.", loc:"St Anne's Church (Gated Garden)" },
+        { time:"6:30pm",  title:"Bride & Groom Exit",   desc:"Time to say goodbye to our newlyweds!", loc:"St Anne's Church (Main Church)" },
+        { time:"7:30pm",  title:"Private Family Dinner", desc:"The family & bridal party will join Cam & Gem for a private dinner before the honeymoon.", loc:"Star of the East" },
+      ];
+
+      var sundialImageUrl = '';
+      var current=0, shadow=document.getElementById('sdShadow'), markersG=document.getElementById('sdMarkers'), listCols=document.getElementById('sdListCols'), sdSection=document.getElementById('sdSection');
+      var cx=170, cy=170, innerR=130, startAngle=-100, endAngle=80, n=events.length;
+
+      function eventAngle(i){ return startAngle+(endAngle-startAngle)*(i/(n-1)); }
+      function angleToXY(deg,radius){ var rad=(deg-90)*Math.PI/180; return{x:cx+radius*Math.cos(rad),y:cy+radius*Math.sin(rad)}; }
+
+      function buildMarkers() {
+        markersG.innerHTML='';
+        events.forEach(function(ev,i){
+          var ang=eventAngle(i), dotPos=angleToXY(ang,innerR-12), outer=angleToXY(ang,innerR+8), inner2=angleToXY(ang,innerR-24), label=angleToXY(ang,innerR+38);
+          var g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.style.cursor='pointer';
+          var tick=document.createElementNS('http://www.w3.org/2000/svg','line');
+          tick.setAttribute('x1',inner2.x); tick.setAttribute('y1',inner2.y); tick.setAttribute('x2',outer.x); tick.setAttribute('y2',outer.y);
+          tick.setAttribute('stroke','#c4a96a'); tick.setAttribute('stroke-width','0.5'); g.appendChild(tick);
+          var circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+          circle.setAttribute('cx',dotPos.x); circle.setAttribute('cy',dotPos.y); circle.setAttribute('r','5');
+          circle.setAttribute('fill',i===0?'#074485':'#c4a96a'); circle.setAttribute('stroke','none'); circle.id='sdDot'+i; g.appendChild(circle);
+          var anchor=ang>30?'start':(ang<-30?'end':'middle');
+          var tx=document.createElementNS('http://www.w3.org/2000/svg','text');
+          tx.setAttribute('x',label.x); tx.setAttribute('y',label.y+4); tx.setAttribute('text-anchor',anchor);
+          tx.setAttribute('font-family','Cinzel,serif'); tx.setAttribute('font-size','8.5');
+          tx.setAttribute('fill',i===0?'#074485':'#7a6a50'); tx.setAttribute('letter-spacing','0.04em');
+          tx.id='sdTx'+i; tx.textContent=ev.time; g.appendChild(tx);
+          g.addEventListener('click',function(){selectEvent(i);}); markersG.appendChild(g);
+        });
+      }
+
+      function buildList() {
+        listCols.innerHTML='';
+        events.forEach(function(ev,i){
+          var item=document.createElement('div'); item.id='sdItem'+i;
+          item.className='sd-list-item'+(i===0?' active':'');
+          item.innerHTML='<span class="sd-list-time" id="sdItemTime'+i+'">'+ev.time+'</span><span class="sd-list-name" id="sdItemName'+i+'">'+ev.title+'</span>';
+          item.addEventListener('click',function(){selectEvent(i);}); listCols.appendChild(item);
+        });
+      }
+
+      function animateShadow(toAngle){ var p=angleToXY(toAngle,innerR-14); shadow.setAttribute('x2',p.x); shadow.setAttribute('y2',p.y); }
+
+      function selectEvent(i){
+        current=i;
+        for(var j=0;j<n;j++){
+          var d=document.getElementById('sdDot'+j), t=document.getElementById('sdTx'+j);
+          var ti=document.getElementById('sdItemTime'+j), ni=document.getElementById('sdItemName'+j);
+          var item=document.getElementById('sdItem'+j);
+          if(d) d.setAttribute('fill',j===i?'#074485':'#c4a96a');
+          if(t) t.setAttribute('fill',j===i?'#074485':'#7a6a50');
+          if(ti) ti.style.color=j===i?'#074485':'#999';
+          if(ni) ni.style.color=j===i?'#074485':'#333';
+          if(item) item.className='sd-list-item'+(j===i?' active':'');
+        }
+        animateShadow(eventAngle(i));
+        var ev=events[i];
+        document.getElementById('sdDetailTime').textContent=ev.time;
+        document.getElementById('sdDetailTitle').textContent=ev.title;
+        document.getElementById('sdDetailDesc').textContent=ev.desc;
+        document.getElementById('sdDetailLoc').textContent=ev.loc;
+      }
+
+      function init(){
+        buildMarkers(); buildList(); selectEvent(0);
+        if(sundialImageUrl){ var img=document.getElementById('sdImg'); img.setAttribute('href',sundialImageUrl); img.style.display=''; document.getElementById('sdPlaceholder').style.display='none'; }
+      }
+
+      init();
+      setTimeout(function(){
+        var obs=new IntersectionObserver(function(entries){ if(entries[0].isIntersecting){ sdSection.style.opacity='1'; sdSection.style.transform='translateY(0)'; obs.disconnect(); } },{threshold:0});
+        obs.observe(sdSection);
+      },2000);
+    })();
+
+  </script>
+
+</body>
+</html>

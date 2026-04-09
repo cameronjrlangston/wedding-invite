@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding — Registry</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; overflow-x: hidden; }
+
+    .rg-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+      padding: 0 0 2rem 0;
+      border-bottom: 0.5px solid #d8d8d8;
+      overflow: hidden;
+    }
+
+    .rg-section.visible { opacity: 1; transform: translateY(0); }
+
+    .rg-inner {
+      font-family: 'Source Sans Pro', sans-serif;
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .rg-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-align: center;
+      color: #1a1a1a;
+      margin: 0 0 0.3rem;
+      line-height: 1.3;
+    }
+
+    .rg-divider {
+      width: 40px; height: 0.5px;
+      background: #d8d8d8;
+      margin: 1rem auto 1.5rem;
+    }
+
+    .rg-tabs {
+      display: flex;
+      border-bottom: 0.5px solid #d8d8d8;
+      margin-bottom: 1.5rem;
+    }
+
+    .rg-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 0.75rem 0.5rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -0.5px;
+      transition: border-color 0.2s ease, color 0.2s ease;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: #999;
+      user-select: none;
+      text-align: center;
+    }
+
+    .rg-tab.active {
+      border-bottom-color: #074485;
+      color: #074485;
+    }
+
+    .rg-tab svg {
+      width: 22px; height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s ease;
+    }
+
+    .rg-panel { display: none; }
+    .rg-panel.active { display: block; }
+
+    .rg-body {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: #222;
+      margin: 0 0 1rem;
+    }
+
+    .rg-body strong { font-weight: 600; color: #1a1a1a; }
+
+    .rg-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      background: #074485;
+      border: none;
+      border-radius: 4px;
+      padding: 9px 18px;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .rg-link:hover { background: #053570; transform: translateY(-1px); }
+    .rg-link:active { transform: translateY(0); }
+    .rg-link svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .rg-detail {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-left: 2px solid #074485;
+      font-size: 14px;
+      font-weight: 300;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    .rg-detail strong { font-weight: 600; color: #1a1a1a; }
+  </style>
+</head>
+<body>
+
+  <div class="rg-section" id="rgSection">
+    <div class="rg-inner">
+
+      <h2 class="rg-heading">Registry</h2>
+      <div class="rg-divider"></div>
+
+      <div class="rg-tabs">
+        <div class="rg-tab active" id="rgTab0" onclick="rgSelect(0)">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 12V22H4V12"/>
+            <path d="M22 7H2v5h20V7z"/>
+            <path d="M12 22V7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/>
+            <path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/>
+          </svg>
+          Wish List
+        </div>
+        <div class="rg-tab" id="rgTab1" onclick="rgSelect(1)">
+          <svg viewBox="0 0 24 24">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <path d="M2 10h20"/>
+            <path d="M6 15h4"/>
+          </svg>
+          Bank Transfer
+        </div>
+        <div class="rg-tab" id="rgTab2" onclick="rgSelect(2)">
+          <svg viewBox="0 0 24 24">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+            <circle cx="12" cy="14" r="2"/>
+          </svg>
+          Cash Gift
+        </div>
+      </div>
+
+      <div id="rgPanel0" class="rg-panel active">
+        <p class="rg-body">
+          After request to bless us with a gift, we put together a list of pieces that would help us settle into our new home when we get married.
+        </p>
+        <a class="rg-link" href="https://www.johnlewis.com/wish-list" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Visit John Lewis Wish List
+        </a>
+      </div>
+
+      <div id="rgPanel1" class="rg-panel">
+        <p class="rg-body">
+          Want to bless us without the faff — we appreciate you!
+        </p>
+        <div class="rg-detail">
+          <strong>Sort code</strong> &nbsp; 00-00-00<br>
+          <strong>Account number</strong> &nbsp; 12345678
+        </div>
+      </div>
+
+      <div id="rgPanel2" class="rg-panel">
+        <p class="rg-body">
+          If you would instead prefer to bless us with cash, please bring an envelope to the wedding and hand it to a member of the bridal party.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function rgSelect(i) {
+      for (var j = 0; j < 3; j++) {
+        document.getElementById('rgTab' + j).classList.toggle('active', j === i);
+        document.getElementById('rgPanel' + j).classList.toggle('active', j === i);
+      }
+    }
+
+    var obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        document.getElementById('rgSection').classList.add('visible');
+        obs.disconnect();
+      }
+    }, { threshold: 0.1 });
+    obs.observe(document.getElementById('rgSection'));
+  </script>
+
+</body>
+</html>

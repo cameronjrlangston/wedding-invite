@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding — Getting Here</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; overflow-x: hidden; }
+
+    .tr-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+      padding: 0 0 2rem 0;
+      border-bottom: 0.5px solid #d8d8d8;
+      overflow: hidden;
+    }
+
+    .tr-section.visible { opacity: 1; transform: translateY(0); }
+
+    .tr-inner {
+      font-family: 'Source Sans Pro', sans-serif;
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .tr-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-align: center;
+      color: #1a1a1a;
+      margin: 0 0 0.3rem;
+      line-height: 1.3;
+    }
+
+    .tr-divider {
+      width: 40px; height: 0.5px;
+      background: #d8d8d8;
+      margin: 1rem auto 1.5rem;
+    }
+
+    .tr-tabs {
+      display: flex;
+      border-bottom: 0.5px solid #d8d8d8;
+      margin-bottom: 1.5rem;
+    }
+
+    .tr-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 0.75rem 0.5rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -0.5px;
+      transition: border-color 0.2s ease, color 0.2s ease;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: #999;
+      user-select: none;
+    }
+
+    .tr-tab.active {
+      border-bottom-color: #074485;
+      color: #074485;
+    }
+
+    .tr-tab svg {
+      width: 22px; height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s ease;
+    }
+
+    .tr-panel { display: none; }
+    .tr-panel.active { display: block; }
+
+    .tr-body {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: #222;
+      margin: 0;
+    }
+
+    .tr-body strong { font-weight: 600; color: #1a1a1a; }
+
+    .tr-note {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-left: 2px solid #074485;
+      font-size: 14px;
+      font-weight: 300;
+      color: #444;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tr-section" id="trSection">
+    <div class="tr-inner">
+
+      <h2 class="tr-heading">Getting Here</h2>
+      <div class="tr-divider"></div>
+
+      <div class="tr-tabs">
+        <div class="tr-tab active" id="trTab0" onclick="trSelect(0)">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/>
+            <rect x="9" y="11" width="14" height="10" rx="2"/>
+            <circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          </svg>
+          By Car
+        </div>
+        <div class="tr-tab" id="trTab1" onclick="trSelect(1)">
+          <svg viewBox="0 0 24 24">
+            <path d="M8 6v6m8-6v6M3 12h18M6 18h.01M18 18h.01"/>
+            <rect x="2" y="6" width="20" height="12" rx="2"/>
+            <path d="M6 6V4a1 1 0 011-1h10a1 1 0 011 1v2"/>
+          </svg>
+          By Bus
+        </div>
+        <div class="tr-tab" id="trTab2" onclick="trSelect(2)">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="2" y1="12" x2="8" y2="12"/>
+            <line x1="16" y1="12" x2="22" y2="12"/>
+          </svg>
+          By Tube / DLR
+        </div>
+      </div>
+
+      <div id="trPanel0" class="tr-panel active">
+        <p class="tr-body">
+          The church is located at the junction of <strong>Commercial Road (A13)</strong> and <strong>Three Colt Street</strong>. Please note that there is <strong>limited on-site parking</strong> at the venue. Pay-and-display parking is available on surrounding side streets, but we highly recommend using public transport or a taxi/Uber to ensure a stress-free arrival.
+        </p>
+      </div>
+
+      <div id="trPanel1" class="tr-panel">
+        <p class="tr-body">
+          Several bus routes stop directly outside or very near the church at the <strong>'St Anne's Church' stop</strong>. You can take the <strong>15</strong> (from Central London/Tower Hill), the <strong>115</strong>, or the <strong>D3</strong>.
+        </p>
+        <div class="tr-note">The 15 route is particularly scenic as it uses the historic heritage path!</div>
+      </div>
+
+      <div id="trPanel2" class="tr-panel">
+        <p class="tr-body">
+          The nearest station is <strong>Westferry (DLR)</strong>, which is a short 5-minute walk from the church. Alternatively, you can take the <strong>Jubilee Line</strong> or <strong>Elizabeth Line</strong> to <strong>Canary Wharf</strong>, then either walk (approx. 15 minutes) or hop on the DLR for one stop to Westferry.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function trSelect(i) {
+      for (var j = 0; j < 3; j++) {
+        document.getElementById('trTab' + j).classList.toggle('active', j === i);
+        document.getElementById('trPanel' + j).classList.toggle('active', j === i);
+      }
+    }
+
+    var obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        document.getElementById('trSection').classList.add('visible');
+        obs.disconnect();
+      }
+    }, { threshold: 0.1 });
+    obs.observe(document.getElementById('trSection'));
+  </script>
+
+</body>
+</html>

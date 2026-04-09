@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding — Our Story</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; overflow-x: hidden; }
+
+    .pol-section {
+      min-height: 750px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+      padding: 0;
+      border-bottom: 0.5px solid #d8d8d8;
+      overflow: hidden;
+    }
+
+    .pol-section.visible { opacity: 1; transform: translateY(0); }
+
+    .pol-text-block { text-align: center; padding: 0 1rem 1.5rem; }
+
+    .polaroid-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400; letter-spacing: 0.08em;
+      text-align: center; color: #1a1a1a; margin: 0 0 0.3rem; line-height: 1.3;
+    }
+
+    .pol-divider { width: 40px; height: 0.5px; background: #d8d8d8; margin: 1rem auto 1.2rem; }
+
+    .pol-body {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 15px; font-weight: 300; line-height: 1.8; color: #222;
+      margin: 0 auto; text-align: center; max-width: 600px;
+    }
+
+    .polaroid-section { padding: 2rem 0 0; display: flex; flex-direction: column; align-items: center; overflow: hidden; user-select: none; }
+
+    .deck-viewport {
+      width: 100%; max-width: 420px; height: 380px;
+      position: relative; display: flex; align-items: center; justify-content: center;
+      cursor: grab;
+    }
+
+    .deck-viewport:active { cursor: grabbing; }
+
+    .polaroid-card {
+      position: absolute; width: 260px;
+      background: #faf9f6; padding: 14px 14px 52px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.13), 0 1px 4px rgba(0,0,0,0.07);
+      border-radius: 2px;
+      transition: transform 0.45s cubic-bezier(0.34, 1.26, 0.64, 1), opacity 0.35s ease;
+      will-change: transform, opacity; touch-action: none;
+    }
+
+    .polaroid-card .photo { width: 100%; aspect-ratio: 1/1; background: #e8e4de; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .polaroid-card .photo img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+
+    .polaroid-card .caption {
+      height: 52px; display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.06em;
+      color: #555; text-align: center; padding: 0 4px;
+    }
+
+    .polaroid-swipe-hint {
+      margin-top: 2.2rem; display: flex; align-items: center; gap: 10px;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      font-family: sans-serif; font-size: 12px; letter-spacing: 0.04em; color: #999;
+    }
+
+    .polaroid-swipe-hint.visible { opacity: 1; transform: translateY(0); }
+
+    .polaroid-swipe-hint .p-arrow span { display: block; width: 18px; height: 1px; background: #bbb; position: relative; }
+
+    .polaroid-swipe-hint .p-arrow span::after {
+      content: ''; position: absolute;
+      right: 0; top: -3px; width: 6px; height: 6px;
+      border-top: 1px solid #bbb; border-right: 1px solid #bbb;
+      transform: rotate(45deg);
+    }
+
+    .polaroid-swipe-hint .p-arrow.left span::after {
+      right: auto; left: 0;
+      border-top: 1px solid #bbb; border-left: 1px solid #bbb; border-right: none;
+      transform: rotate(-45deg);
+    }
+
+    .polaroid-dots { display: flex; gap: 6px; margin-top: 1rem; opacity: 0; transition: opacity 0.5s ease 0.2s; }
+    .polaroid-dots.visible { opacity: 1; }
+    .polaroid-dots .dot { width: 5px; height: 5px; border-radius: 50%; background: #ccc; transition: background 0.3s ease, transform 0.3s ease; }
+    .polaroid-dots .dot.active { background: #888; transform: scale(1.4); }
+
+    .polaroid-card.is-dragging { transition: none !important; }
+    .polaroid-card.fly-left  { transform: translateX(-130%) rotate(-18deg) !important; opacity: 0; }
+    .polaroid-card.fly-right { transform: translateX(130%)  rotate(18deg)  !important; opacity: 0; }
+  </style>
+</head>
+<body>
+
+  <div class="pol-section" id="polSection">
+    <div class="pol-text-block">
+      <h2 class="polaroid-heading">Our Story So Far</h2>
+      <div class="pol-divider"></div>
+      <p class="pol-body">July 21st 2024 — After a brief introduction the previous week, we by chance sat next to one another during refreshments after the church service on Sunday. We had been in the same room every week for a whole year without meeting. There was a spark from the first conversation, we went on our first date 2 days later, became official 3 weeks after that and spent a lot of time together over the next months. Below are some of our favourite memories so far...</p>
+    </div>
+    <div class="polaroid-section" id="polaroidSection">
+      <div class="deck-viewport" id="deckViewport"></div>
+      <div class="polaroid-dots" id="polaroidDots"></div>
+      <div class="polaroid-swipe-hint" id="swipeHint">
+        <div class="p-arrow left"><span></span></div>
+        swipe to view more
+        <div class="p-arrow"><span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var cards = [
+        { caption: "Pumpkin Patch",          src: "https://www.dropbox.com/scl/fi/hghjqfacvl7bx07yh4ug3/polaroid-1.jpg?rlkey=8rgy2joylbqac21lbuepb6r8d&st=sml541qs&raw=1" },
+        { caption: "Working at The Beehive", src: "https://www.dropbox.com/scl/fi/mjv04l6womyyi3fn4t170/polaroid-2.jpg?rlkey=fiunbn5i23l50xzxafl02m6x5&st=e0tdev9l&raw=1" },
+        { caption: "Soaking in the Sun",     src: "https://www.dropbox.com/scl/fi/yr6ohcxbomyl33pejrp3n/polaroid-3.jpg?rlkey=jzrt5r6re9fl0ts9lg6plyxdb&st=stpr1cyn&raw=1" },
+        { caption: "Engaged!",               src: "https://www.dropbox.com/scl/fi/bv5hxq2262lw9qpwzwtq1/polaroid-4.jpg?rlkey=ct3nprq4ry3r0vol0rupp8cz5&st=6n1hydmi&raw=1" },
+        { caption: "Running for the Tube",   src: "https://www.dropbox.com/scl/fi/kp5uxvj0dx3t2yt9zk8tu/polaroid-5.jpg?rlkey=7yj3xsx2ahvkis7dq8nyuo5e5&st=yonb37q1&raw=1" },
+      ];
+
+      var rotations  = [-4, 2, -2, 5, -1];
+      var offsets    = [{x:0,y:0},{x:3,y:-3},{x:-4,y:2},{x:2,y:-2},{x:-2,y:4}];
+      var viewport   = document.getElementById('deckViewport');
+      var dotsEl     = document.getElementById('polaroidDots');
+      var hintEl     = document.getElementById('swipeHint');
+      var polSection = document.getElementById('polSection');
+      var current = 0, isDragging = false, startX = 0, dragDelta = 0, cardEls = [], animated = false;
+
+      function buildDeck() {
+        viewport.innerHTML = ''; cardEls = []; dotsEl.innerHTML = '';
+        cards.forEach(function(c, i) {
+          var card = document.createElement('div');
+          card.className = 'polaroid-card';
+          card.innerHTML = '<div class="photo"><img src="' + c.src + '" alt="' + c.caption + '" draggable="false"></div><div class="caption">' + c.caption + '</div>';
+          viewport.appendChild(card); cardEls.push(card);
+          var dot = document.createElement('div');
+          dot.className = 'dot' + (i === 0 ? ' active' : '');
+          dotsEl.appendChild(dot);
+        });
+        layoutCards();
+      }
+
+      function layoutCards(dragOffset) {
+        dragOffset = dragOffset || 0;
+        var n = cards.length;
+        cardEls.forEach(function(el, i) {
+          var rel = (i - current + n) % n;
+          var behindCount = rel <= Math.floor(n/2) ? rel : rel - n;
+          var zIndex = n - Math.abs(behindCount);
+          var rot = rotations[i % rotations.length];
+          var tx = offsets[i % offsets.length].x;
+          var ty = offsets[i % offsets.length].y;
+          var scale = 1, opacity = 1;
+          if (behindCount < 0 || behindCount > 2) { el.style.zIndex=0; el.style.transform='translateX(0px) rotate('+rot+'deg) scale(0.88)'; el.style.opacity=0; return; }
+          if (behindCount === 0) { tx += dragOffset; rot += dragOffset * 0.04; }
+          else if (behindCount === 1) { tx+=6; ty+=6; scale=0.955; }
+          else if (behindCount === 2) { tx+=12; ty+=12; scale=0.91; }
+          el.style.zIndex = zIndex;
+          el.style.transform = 'translate('+tx+'px,'+ty+'px) rotate('+rot+'deg) scale('+scale+')';
+          el.style.opacity = opacity;
+        });
+      }
+
+      function updateDots() { Array.from(dotsEl.children).forEach(function(d,i){ d.classList.toggle('active', i===current); }); }
+
+      function advance(direction) {
+        var top = cardEls[current];
+        top.classList.remove('is-dragging');
+        top.classList.add(direction > 0 ? 'fly-left' : 'fly-right');
+        setTimeout(function() {
+          top.classList.remove('fly-left','fly-right');
+          current = direction > 0 ? (current+1)%cards.length : (current-1+cards.length)%cards.length;
+          layoutCards(); updateDots();
+        }, 380);
+      }
+
+      function onPointerDown(e) { isDragging=true; startX=e.clientX!==undefined?e.clientX:e.touches[0].clientX; dragDelta=0; cardEls[current].classList.add('is-dragging'); }
+      function onPointerMove(e) { if(!isDragging)return; var x=e.clientX!==undefined?e.clientX:e.touches[0].clientX; dragDelta=x-startX; layoutCards(dragDelta); }
+      function onPointerUp() { if(!isDragging)return; isDragging=false; cardEls[current].classList.remove('is-dragging'); if(Math.abs(dragDelta)>60){advance(dragDelta<0?1:-1);}else{layoutCards(0);} dragDelta=0; }
+
+      viewport.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+      viewport.addEventListener('touchstart', function(e){onPointerDown(e);},{passive:true});
+      window.addEventListener('touchmove', function(e){onPointerMove(e);},{passive:true});
+      window.addEventListener('touchend', onPointerUp);
+
+      function animateCardsIn() {
+        if(animated)return; animated=true;
+        cardEls.forEach(function(el,i){ el.style.transition='none'; el.style.transform='translateY(80px) rotate('+rotations[i]+'deg) scale(0.88)'; el.style.opacity='0'; });
+        requestAnimationFrame(function() {
+          cardEls.forEach(function(el,i){ setTimeout(function(){ el.style.transition='transform 0.6s cubic-bezier(0.34,1.26,0.64,1), opacity 0.45s ease'; layoutCards(); },i*80); });
+          setTimeout(function(){ dotsEl.classList.add('visible'); hintEl.classList.add('visible'); },500);
+        });
+      }
+
+      buildDeck();
+
+      var obs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          polSection.classList.add('visible');
+          setTimeout(animateCardsIn, 600);
+          obs.disconnect();
+        }
+      }, { threshold: 0 });
+      obs.observe(polSection);
+
+    })();
+  </script>
+
+</body>
+</html>

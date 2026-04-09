@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding — The Day</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; overflow-x: hidden; }
+
+    .sd-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+      padding: 0 0 2rem 0;
+      border-bottom: 0.5px solid #d8d8d8;
+      overflow: hidden;
+    }
+
+    .sd-section.visible { opacity: 1; transform: translateY(0); }
+
+    .sd-inner { font-family: 'Source Sans Pro', sans-serif; max-width: 520px; margin: 0 auto; padding: 0 1rem; }
+
+    .sd-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400; letter-spacing: 0.08em;
+      text-align: center; color: #1a1a1a; margin: 0 0 0.3rem; line-height: 1.3;
+    }
+
+    .sd-divider { width: 40px; height: 0.5px; background: #d8d8d8; margin: 1rem auto 1.5rem; }
+    .sd-dial-wrap { position: relative; width: 100%; max-width: 340px; margin: 0 auto 1.5rem; }
+    .sd-dial-wrap svg { display: block; width: 100%; }
+
+    .sd-detail {
+      height: 110px; overflow: hidden; text-align: center;
+      padding: 0.75rem 1rem; margin: 0 auto 1.5rem; max-width: 340px;
+      border-top: 0.5px solid #d8d8d8; border-bottom: 0.5px solid #d8d8d8;
+    }
+
+    .sd-detail-time  { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.1em; color: #074485; margin: 0 0 3px; }
+    .sd-detail-title { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 500; color: #1a1a1a; margin: 0 0 4px; }
+    .sd-detail-desc  { font-size: 13px; font-weight: 300; color: #555; line-height: 1.6; margin: 0; }
+    .sd-detail-loc   { font-size: 12px; color: #888; margin: 4px 0 0; font-style: italic; }
+
+    .sd-list { max-width: 340px; margin: 0 auto; border-top: 0.5px solid #d8d8d8; }
+    .sd-list-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; }
+    .sd-list-item { display: flex; align-items: baseline; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid #ede9e2; cursor: pointer; }
+    .sd-list-item.active .sd-list-time,
+    .sd-list-item.active .sd-list-name { color: #074485; }
+    .sd-list-time { font-family: 'Cinzel', serif; font-size: 10px; color: #999; letter-spacing: 0.05em; white-space: nowrap; transition: color 0.2s; }
+    .sd-list-name { font-family: 'Cinzel', serif; font-size: 10px; color: #333; line-height: 1.3; transition: color 0.2s; }
+  </style>
+</head>
+<body>
+
+  <div class="sd-section" id="sdSection">
+    <div class="sd-inner">
+      <h2 class="sd-heading">The Day</h2>
+      <div class="sd-divider"></div>
+      <div class="sd-dial-wrap">
+        <svg id="sdSvg" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="sdDialClip"><circle cx="170" cy="170" r="130"/></clipPath></defs>
+          <circle cx="170" cy="170" r="130" fill="#e8dfc8" stroke="#c4a96a" stroke-width="1"/>
+          <!-- Replace empty href with your sundial image URL -->
+          <image id="sdImg" href="" x="40" y="40" width="260" height="260" clip-path="url(#sdDialClip)" preserveAspectRatio="xMidYMid slice" style="display:none"/>
+          <g id="sdPlaceholder">
+            <circle cx="170" cy="170" r="130" fill="#e8dfc8"/>
+            <g stroke="#c4a96a" stroke-width="0.5" opacity="0.4">
+              <line x1="170" y1="48" x2="170" y2="292"/>
+              <line x1="48" y1="170" x2="292" y2="170"/>
+              <line x1="78" y1="78" x2="262" y2="262"/>
+              <line x1="262" y1="78" x2="78" y2="262"/>
+            </g>
+            <circle cx="170" cy="170" r="80" fill="none" stroke="#c4a96a" stroke-width="0.5" opacity="0.3"/>
+            <circle cx="170" cy="170" r="44" fill="none" stroke="#c4a96a" stroke-width="0.5" opacity="0.3"/>
+            <text x="170" y="162" text-anchor="middle" font-family="Cinzel,serif" font-size="11" fill="#a08040" opacity="0.6" letter-spacing="0.1em">YOUR</text>
+            <text x="170" y="176" text-anchor="middle" font-family="Cinzel,serif" font-size="11" fill="#a08040" opacity="0.6" letter-spacing="0.1em">SUNDIAL</text>
+            <text x="170" y="190" text-anchor="middle" font-family="Cinzel,serif" font-size="11" fill="#a08040" opacity="0.6" letter-spacing="0.1em">IMAGE</text>
+          </g>
+          <circle cx="170" cy="170" r="130" fill="none" stroke="#c4a96a" stroke-width="1.5"/>
+          <line id="sdShadow" x1="170" y1="170" x2="170" y2="48" stroke="#074485" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+          <circle cx="170" cy="170" r="10" fill="#c4a96a"/>
+          <g id="sdMarkers"></g>
+        </svg>
+      </div>
+      <div id="sdDetail" class="sd-detail">
+        <p class="sd-detail-time"  id="sdDetailTime"></p>
+        <p class="sd-detail-title" id="sdDetailTitle"></p>
+        <p class="sd-detail-desc"  id="sdDetailDesc"></p>
+        <p class="sd-detail-loc"   id="sdDetailLoc"></p>
+      </div>
+      <div class="sd-list">
+        <div class="sd-list-cols" id="sdListCols"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var events = [
+        { time:"11:30am", title:"Guest Arrivals",        desc:"Please arrive at St Anne's Church. Ushers will be on hand to welcome you and show you to your seats.", loc:"St Anne's Church, Limehouse" },
+        { time:"12:00pm", title:"Wedding Ceremony",      desc:"The ceremony begins. Please be seated by 11:50am.", loc:"St Anne's Church (Main Church)" },
+        { time:"1:30pm",  title:"Picnic Reception",      desc:"After the ceremony, you will be guided to the gated garden where a picnic reception awaits! Enjoy food, drinks and good company.", loc:"St Anne's Church (Gated Garden)" },
+        { time:"3:00pm",  title:"Speeches",              desc:"Get your glasses ready — it's time for the speeches!", loc:"St Anne's Church (Gated Garden)" },
+        { time:"3:45pm",  title:"Cake Cutting",          desc:"Cam & Gem cut the wedding cake and it's time for sweet treats!", loc:"St Anne's Church (Gated Garden)" },
+        { time:"4:30pm",  title:"First Dance",           desc:"Let's celebrate! Join Cam & Gem on the dancefloor.", loc:"St Anne's Church (Gated Garden)" },
+        { time:"6:30pm",  title:"Bride & Groom Exit",   desc:"Time to say goodbye to our newlyweds!", loc:"St Anne's Church (Main Church)" },
+        { time:"7:30pm",  title:"Private Family Dinner", desc:"The family & bridal party will join Cam & Gem for a private dinner before the honeymoon.", loc:"Star of the East" },
+      ];
+
+      var sundialImageUrl = '';
+
+      var current=0, shadow=document.getElementById('sdShadow'), markersG=document.getElementById('sdMarkers');
+      var listCols=document.getElementById('sdListCols'), sdSection=document.getElementById('sdSection');
+      var cx=170, cy=170, innerR=130, startAngle=-100, endAngle=80, n=events.length;
+
+      function eventAngle(i){ return startAngle+(endAngle-startAngle)*(i/(n-1)); }
+      function angleToXY(deg,radius){ var rad=(deg-90)*Math.PI/180; return{x:cx+radius*Math.cos(rad),y:cy+radius*Math.sin(rad)}; }
+
+      function buildMarkers() {
+        markersG.innerHTML='';
+        events.forEach(function(ev,i){
+          var ang=eventAngle(i), dotPos=angleToXY(ang,innerR-12), outer=angleToXY(ang,innerR+8), inner2=angleToXY(ang,innerR-24), label=angleToXY(ang,innerR+38);
+          var g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.style.cursor='pointer';
+          var tick=document.createElementNS('http://www.w3.org/2000/svg','line');
+          tick.setAttribute('x1',inner2.x); tick.setAttribute('y1',inner2.y); tick.setAttribute('x2',outer.x); tick.setAttribute('y2',outer.y);
+          tick.setAttribute('stroke','#c4a96a'); tick.setAttribute('stroke-width','0.5'); g.appendChild(tick);
+          var circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+          circle.setAttribute('cx',dotPos.x); circle.setAttribute('cy',dotPos.y); circle.setAttribute('r','5');
+          circle.setAttribute('fill',i===0?'#074485':'#c4a96a'); circle.setAttribute('stroke','none'); circle.id='sdDot'+i; g.appendChild(circle);
+          var anchor=ang>30?'start':(ang<-30?'end':'middle');
+          var tx=document.createElementNS('http://www.w3.org/2000/svg','text');
+          tx.setAttribute('x',label.x); tx.setAttribute('y',label.y+4); tx.setAttribute('text-anchor',anchor);
+          tx.setAttribute('font-family','Cinzel,serif'); tx.setAttribute('font-size','8.5');
+          tx.setAttribute('fill',i===0?'#074485':'#7a6a50'); tx.setAttribute('letter-spacing','0.04em');
+          tx.id='sdTx'+i; tx.textContent=ev.time; g.appendChild(tx);
+          g.addEventListener('click',function(){selectEvent(i);}); markersG.appendChild(g);
+        });
+      }
+
+      function buildList() {
+        listCols.innerHTML='';
+        events.forEach(function(ev,i){
+          var item=document.createElement('div'); item.id='sdItem'+i;
+          item.className='sd-list-item'+(i===0?' active':'');
+          item.innerHTML='<span class="sd-list-time" id="sdItemTime'+i+'">'+ev.time+'</span><span class="sd-list-name" id="sdItemName'+i+'">'+ev.title+'</span>';
+          item.addEventListener('click',function(){selectEvent(i);}); listCols.appendChild(item);
+        });
+      }
+
+      function animateShadow(toAngle){ var p=angleToXY(toAngle,innerR-14); shadow.setAttribute('x2',p.x); shadow.setAttribute('y2',p.y); }
+
+      function selectEvent(i){
+        current=i;
+        for(var j=0;j<n;j++){
+          var d=document.getElementById('sdDot'+j), t=document.getElementById('sdTx'+j);
+          var ti=document.getElementById('sdItemTime'+j), ni=document.getElementById('sdItemName'+j);
+          var item=document.getElementById('sdItem'+j);
+          if(d) d.setAttribute('fill',j===i?'#074485':'#c4a96a');
+          if(t) t.setAttribute('fill',j===i?'#074485':'#7a6a50');
+          if(ti) ti.style.color=j===i?'#074485':'#999';
+          if(ni) ni.style.color=j===i?'#074485':'#333';
+          if(item) item.className='sd-list-item'+(j===i?' active':'');
+        }
+        animateShadow(eventAngle(i));
+        var ev=events[i];
+        document.getElementById('sdDetailTime').textContent=ev.time;
+        document.getElementById('sdDetailTitle').textContent=ev.title;
+        document.getElementById('sdDetailDesc').textContent=ev.desc;
+        document.getElementById('sdDetailLoc').textContent=ev.loc;
+      }
+
+      function init(){
+        buildMarkers(); buildList(); selectEvent(0);
+        if(sundialImageUrl){ var img=document.getElementById('sdImg'); img.setAttribute('href',sundialImageUrl); img.style.display=''; document.getElementById('sdPlaceholder').style.display='none'; }
+      }
+
+      init();
+
+      var obs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          sdSection.classList.add('visible');
+          obs.disconnect();
+        }
+      }, { threshold: 0 });
+      obs.observe(sdSection);
+
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding — Dress Code</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; overflow-x: hidden; }
+
+    .dc-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+      padding: 0 0 2rem 0;
+      border-bottom: 0.5px solid #d8d8d8;
+      overflow: hidden;
+    }
+
+    .dc-section.visible { opacity: 1; transform: translateY(0); }
+
+    .dc-inner {
+      font-family: 'Source Sans Pro', sans-serif;
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .dc-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-align: center;
+      color: #1a1a1a;
+      margin: 0 0 0.3rem;
+      line-height: 1.3;
+    }
+
+    .dc-divider {
+      width: 40px; height: 0.5px;
+      background: #d8d8d8;
+      margin: 1rem auto 1.5rem;
+    }
+
+    .dc-tabs {
+      display: flex;
+      border-bottom: 0.5px solid #d8d8d8;
+      margin-bottom: 1.5rem;
+    }
+
+    .dc-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 0.75rem 0.5rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -0.5px;
+      transition: border-color 0.2s ease, color 0.2s ease;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: #999;
+      user-select: none;
+      text-align: center;
+    }
+
+    .dc-tab.active {
+      border-bottom-color: #074485;
+      color: #074485;
+    }
+
+    .dc-tab svg {
+      width: 22px; height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s ease;
+    }
+
+    .dc-panel { display: none; }
+    .dc-panel.active { display: block; }
+
+    .dc-body {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: #222;
+      margin: 0 0 1rem;
+    }
+
+    .dc-body strong { font-weight: 600; color: #1a1a1a; }
+
+    .dc-note {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-left: 2px solid #074485;
+      font-size: 14px;
+      font-weight: 300;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    .dc-note strong { font-weight: 600; color: #1a1a1a; }
+  </style>
+</head>
+<body>
+
+  <div class="dc-section" id="dcSection">
+    <div class="dc-inner">
+
+      <h2 class="dc-heading">Dress Code</h2>
+      <div class="dc-divider"></div>
+
+      <div class="dc-tabs">
+        <div class="dc-tab active" id="dcTab0" onclick="dcSelect(0)">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L8 7H4l2 5-3 4h6l3 6 3-6h6l-3-4 2-5h-4z"/>
+          </svg>
+          The Vibe
+        </div>
+        <div class="dc-tab" id="dcTab1" onclick="dcSelect(1)">
+          <svg viewBox="0 0 24 24">
+            <path d="M20.38 8.57l-1.23 1.85a8 8 0 01-.22 7.58H5.07A8 8 0 0115.58 6.85l1.85-1.23A10 10 0 003.35 19a2 2 0 001.72 1h13.85a2 2 0 001.74-1 10 10 0 00-.27-10.44z"/>
+            <path d="M10.59 15.41a2 2 0 002.83 0l5.66-8.49-8.49 5.66a2 2 0 000 2.83z"/>
+          </svg>
+          For Him
+        </div>
+        <div class="dc-tab" id="dcTab2" onclick="dcSelect(2)">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2c-1.5 0-3 .5-3 2v1H7l-2 4v2h2v9a2 2 0 002 2h6a2 2 0 002-2v-9h2V9l-2-4h-2V4c0-1.5-1.5-2-3-2z"/>
+          </svg>
+          For Her
+        </div>
+      </div>
+
+      <div id="dcPanel0" class="dc-panel active">
+        <p class="dc-body">
+          We're going for a <strong>Smart Casual / Garden Party</strong> feel — think elegant but relaxed. We want everyone to feel comfortable and enjoy the day, so please dress in a way that reflects the occasion without being too formal. Light, summery colours and breathable fabrics are encouraged — it's June in London, after all!
+        </p>
+        <div class="dc-note">
+          The reception will take place in the <strong>Gated Garden</strong> at St Anne's Church, so please bear in mind you will be on grass for much of the afternoon.
+        </div>
+      </div>
+
+      <div id="dcPanel1" class="dc-panel">
+        <p class="dc-body">
+          A smart suit or blazer with trousers works perfectly — a tie is entirely optional. Light colours such as cream, navy, sage or tan are a great fit for the garden party atmosphere. Avoid very casual items like jeans or trainers.
+        </p>
+        <div class="dc-note">
+          <strong>Suggested:</strong> Linen or cotton suit, chinos with a blazer, loafers or smart shoes.
+        </div>
+      </div>
+
+      <div id="dcPanel2" class="dc-panel">
+        <p class="dc-body">
+          A midi or maxi dress, a smart jumpsuit, or a skirt and blouse would be ideal. Florals, pastels and earthy tones all work beautifully for a summer garden party. Please feel free to wear colour — the brighter the better!
+        </p>
+        <div class="dc-note">
+          <strong>One small note:</strong> as the reception is on grass, we'd gently suggest leaving the stilettos at home — block heels, wedges or flats will keep you much more comfortable through the afternoon!
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function dcSelect(i) {
+      for (var j = 0; j < 3; j++) {
+        document.getElementById('dcTab' + j).classList.toggle('active', j === i);
+        document.getElementById('dcPanel' + j).classList.toggle('active', j === i);
+      }
+    }
+
+    var obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        document.getElementById('dcSection').classList.add('visible');
+        obs.disconnect();
+      }
+    }, { threshold: 0.1 });
+    obs.observe(document.getElementById('dcSection'));
+  </script>
+
+</body>
+</html>

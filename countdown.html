@@ -44,7 +44,7 @@
       justify-content: center;
       align-items: flex-start;
       gap: 1.2rem;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
 
     .cd-unit {
@@ -107,13 +107,13 @@
       line-height: 68px;
     }
 
-    @media (max-width: 480px) {
-      .cd-units { gap: 0.4rem; flex-wrap: nowrap; }
-      .cd-digit-wrap { width: 32px; height: 48px; }
-      .cd-card { font-size: 1.4rem; }
+    @media (max-width: 560px) {
+      .cd-units { gap: 0.3rem; flex-wrap: nowrap; }
+      .cd-digit-wrap { width: 28px; height: 42px; }
+      .cd-card { font-size: 1.2rem; }
       .cd-digits { gap: 2px; }
-      .cd-sep { font-size: 1.2rem; line-height: 48px; }
-      .cd-label { font-size: 10px; }
+      .cd-sep { font-size: 1rem; line-height: 42px; }
+      .cd-label { font-size: 9px; letter-spacing: 0.05em; }
     }
   </style>
 </head>

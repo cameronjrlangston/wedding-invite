@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cam &amp; Gem — Wedding</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; overflow-x: hidden; }
+    body.locked { overflow: hidden; height: 100vh; }
+
+    /* ── SHARED FADE-IN ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── LOGO ── */
+    .site-logo {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      color: #074485;
+      text-align: center;
+      padding: 2rem 1rem 1.5rem;
+      border-bottom: 0.5px solid #d8d8d8;
+      margin: 0;
+    }
+
+    /* ── SHARED SECTION WRAPPER ── */
+    .section-wrap {
+      padding: 2rem 0 2rem 0;
+      border-bottom: 0.5px solid #d8d8d8;
+      overflow: hidden;
+    }
+
+    /* ── SHARED HEADING ── */
+    .section-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-align: center;
+      color: #1a1a1a;
+      margin: 0 0 0.3rem;
+      line-height: 1.3;
+    }
+
+    .section-divider {
+      width: 40px; height: 0.5px;
+      background: #d8d8d8;
+      margin: 1rem auto 1.5rem;
+    }
+
+    /* ── SHARED TAB COMPONENT ── */
+    .tab-inner {
+      font-family: 'Source Sans Pro', sans-serif;
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .tab-tabs {
+      display: flex;
+      border-bottom: 0.5px solid #d8d8d8;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 0.75rem 0.5rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -0.5px;
+      transition: border-color 0.2s ease, color 0.2s ease;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: #999;
+      user-select: none;
+      text-align: center;
+    }
+
+    .tab-tab.active { border-bottom-color: #074485; color: #074485; }
+
+    .tab-tab svg {
+      width: 22px; height: 22px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .tab-body { font-size: 15px; font-weight: 300; line-height: 1.8; color: #222; margin: 0 0 1rem; }
+    .tab-body strong { font-weight: 600; color: #1a1a1a; }
+
+    .tab-note {
+      margin-top: 1rem; padding: 0.75rem 1rem;
+      border-left: 2px solid #074485;
+      font-size: 14px; font-weight: 300; color: #444; line-height: 1.7;
+    }
+    .tab-note strong { font-weight: 600; color: #1a1a1a; }
+
+    .tab-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 14px; font-weight: 600; color: #fff; background: #074485;
+      border: none; border-radius: 4px; padding: 9px 18px;
+      cursor: pointer; text-decoration: none; letter-spacing: 0.03em;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+    .tab-link:hover { background: #053570; transform: translateY(-1px); }
+    .tab-link:active { transform: translateY(0); }
+    .tab-link svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ════════════════════════════════
+       1. POSTCARD
+    ════════════════════════════════ */
+    .postcard-layout {
+      display: flex; flex-direction: row;
+      align-items: center; justify-content: center;
+      gap: 3rem; padding: 2rem 2rem 3.5rem;
+      min-height: 520px; perspective: 1200px;
+    }
+    .postcard-scene { display: flex; justify-content: center; align-items: flex-start; flex-shrink: 0; }
+    .postcard-scene__inner { position: relative; }
+    .postcard { width: 300px; height: 450px; position: relative; transform-style: preserve-3d; cursor: default; opacity: 0; }
+    .postcard--interactive { cursor: pointer; }
+    @keyframes pc-glide-in {
+      0% { transform: translateY(-120vh) rotate(-8deg); opacity: 0; }
+      60% { opacity: 1; }
+      85% { transform: translateY(18px) rotate(1.5deg); }
+      92% { transform: translateY(-6px) rotate(-0.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+    }
+    @keyframes pc-flip-reveal {
+      0% { transform: rotateY(0deg) rotate(0deg); }
+      30% { transform: rotateY(20deg) rotate(1.5deg); }
+      50% { transform: rotateY(90deg) rotate(2deg); }
+      70% { transform: rotateY(160deg) rotate(1deg); }
+      85% { transform: rotateY(190deg) rotate(-1deg); }
+      100% { transform: rotateY(180deg) rotate(0deg); }
+    }
+    .postcard__face {
+      position: absolute; inset: 0;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      border-radius: 6px; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+    }
+    .postcard__face--back { transform: rotateY(-180deg); }
+    .postcard__face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .postcard-hint {
+      position: absolute; bottom: -42px; left: 0; right: 0;
+      text-align: center; font-size: 12px; color: #999;
+      font-family: sans-serif; letter-spacing: 0.04em;
+      opacity: 0; transition: opacity 0.4s ease;
+      pointer-events: none; user-select: none;
+    }
+    .postcard-hint--visible { opacity: 1; }
+    .got-mail {
+      position: absolute; top: 60%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 12px; color: #999; font-family: sans-serif;
+      letter-spacing: 0.04em; opacity: 0; transition: opacity 0.5s ease;
+      pointer-events: none; user-select: none;
+      white-space: nowrap; display: flex; align-items: baseline; gap: 0; margin: 0;
+    }
+    .got-mail--visible { opacity: 1; }
+    @keyframes dot-fade { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
+    .got-mail__dot {
+      display: inline-block; width: 1.2px; height: 1.2px;
+      border-radius: 50%; background: #999; margin-left: 3px;
+      vertical-align: baseline; position: relative; top: -1px;
+      animation: dot-fade 1.2s infinite ease-in-out;
+    }
+    .got-mail__dot:nth-child(2) { animation-delay: 0.4s; }
+    .got-mail__dot:nth-child(3) { animation-delay: 0.8s; }
+    .invite-panel {
+      font-family: 'Source Sans Pro', sans-serif; max-width: 420px;
+      opacity: 0; transform: translateX(24px);
+      transition: opacity 0.9s ease 0.4s, transform 0.9s ease 0.4s; text-align: left;
+    }
+    .invite-panel.visible { opacity: 1; transform: translateX(0); }
+    .wedding-heading {
+      font-family: 'Cinzel', serif; font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400; letter-spacing: 0.08em; text-align: left;
+      color: #1a1a1a; margin: 0 0 0.3rem; line-height: 1.3;
+    }
+    .invite-section { padding: 0 0 1.5rem 0; border-top: 0.5px solid #d8d8d8; border-bottom: 0.5px solid #d8d8d8; }
+    .invite-body { font-size: 15px; font-weight: 300; line-height: 1.8; color: #222; margin-bottom: 1.5rem; text-align: left; }
+    .invite-details { padding-left: 1rem; border-left: 2px solid #074485; }
+    .detail-row { display: flex; gap: 8px; font-size: 14px; line-height: 1.9; color: #222; }
+    .detail-label { font-weight: 600; color: #555; min-width: 80px; }
+    .detail-value { font-weight: 300; }
+    .directions-btn {
+      margin-top: 1.25rem; display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Source Sans Pro', sans-serif; font-size: 14px; font-weight: 600;
+      color: #fff; background: #074485; border: none; border-radius: 4px;
+      padding: 9px 18px; cursor: pointer; text-decoration: none; letter-spacing: 0.03em;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+    .directions-btn:hover { background: #053570; transform: translateY(-1px); }
+    .directions-btn:active { transform: translateY(0); }
+
+    /* ════════════════════════════════
+       2. POLAROID
+    ════════════════════════════════ */
+    .pol-section { min-height: 750px; padding: 0; border-bottom: 0.5px solid #d8d8d8; overflow: hidden; }
+    .pol-text-block { text-align: center; padding: 0 1rem 1.5rem; }
+    .pol-body { font-family: 'Source Sans Pro', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #222; margin: 0 auto; text-align: center; max-width: 600px; }
+    .pol-divider { width: 40px; height: 0.5px; background: #d8d8d8; margin: 1rem auto 1.2rem; }
+    .polaroid-section { padding: 2rem 0 0; display: flex; flex-direction: column; align-items: center; overflow: hidden; user-select: none; }
+    .deck-viewport { width: 100%; max-width: 420px; height: 380px; position: relative; display: flex; align-items: center; justify-content: center; cursor: grab; }
+    .deck-viewport:active { cursor: grabbing; }
+    .polaroid-card { position: absolute; width: 260px; background: #faf9f6; padding: 14px 14px 52px; box-shadow: 0 4px 24px rgba(0,0,0,0.13), 0 1px 4px rgba(0,0,0,0.07); border-radius: 2px; transition: transform 0.45s cubic-bezier(0.34, 1.26, 0.64, 1), opacity 0.35s ease; will-change: transform, opacity; touch-action: none; }
+    .polaroid-card .photo { width: 100%; aspect-ratio: 1/1; background: #e8e4de; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .polaroid-card .photo img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+    .polaroid-card .caption { height: 52px; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.06em; color: #555; text-align: center; padding: 0 4px; }
+    .swipe-hint { margin-top: 2.2rem; display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(6px); transition: opacity 0.6s ease, transform 0.6s ease; font-family: sans-serif; font-size: 12px; letter-spacing: 0.04em; color: #999; }
+    .swipe-hint.visible { opacity: 1; transform: translateY(0); }
+    .swipe-hint .p-arrow span { display: block; width: 18px; height: 1px; background: #bbb; position: relative; }
+    .swipe-hint .p-arrow span::after { content: ''; position: absolute; right: 0; top: -3px; width: 6px; height: 6px; border-top: 1px solid #bbb; border-right: 1px solid #bbb; transform: rotate(45deg); }
+    .swipe-hint .p-arrow.left span::after { right: auto; left: 0; border-top: 1px solid #bbb; border-left: 1px solid #bbb; border-right: none; transform: rotate(-45deg); }
+    .pol-dots { display: flex; gap: 6px; margin-top: 1rem; opacity: 0; transition: opacity 0.5s ease 0.2s; }
+    .pol-dots.visible { opacity: 1; }
+    .pol-dots .dot { width: 5px; height: 5px; border-radius: 50%; background: #ccc; transition: background 0.3s ease, transform 0.3s ease; }
+    .pol-dots .dot.active { background: #888; transform: scale(1.4); }
+    .polaroid-card.is-dragging { transition: none !important; }
+    .polaroid-card.fly-left { transform: translateX(-130%) rotate(-18deg) !important; opacity: 0; }
+    .polaroid-card.fly-right { transform: translateX(130%) rotate(18deg) !important; opacity: 0; }
+
+    /* ════════════════════════════════
+       3. SUNDIAL
+    ════════════════════════════════ */
+    .sd-inner { font-family: 'Source Sans Pro', sans-serif; max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
+    .sd-main { display: flex; flex-direction: row; align-items: flex-start; gap: 2.5rem; }
+    .sd-dial-col { flex: 0 0 360px; max-width: 360px; }
+    .sd-info-col { flex: 1; min-width: 0; padding-top: 3.5rem; }
+    .sd-dial-wrap { position: relative; width: 100%; padding: 28px 28px 16px 28px; }
+    .sd-dial-wrap svg { display: block; width: 100%; overflow: visible; }
+    .sd-hint { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 0.6rem; opacity: 0; transform: translateY(4px); transition: opacity 0.6s ease, transform 0.6s ease; font-family: sans-serif; font-size: 12px; letter-spacing: 0.04em; color: #999; }
+    .sd-hint.visible { opacity: 1; transform: translateY(0); }
+    .sd-hint .h-arrow span { display: block; width: 18px; height: 1px; background: #bbb; position: relative; }
+    .sd-hint .h-arrow span::after { content: ''; position: absolute; right: 0; top: -3px; width: 6px; height: 6px; border-top: 1px solid #bbb; border-right: 1px solid #bbb; transform: rotate(45deg); }
+    .sd-detail { height: 120px; overflow: hidden; text-align: left; padding: 0.75rem 0; border-top: 0.5px solid #d8d8d8; border-bottom: 0.5px solid #d8d8d8; margin-bottom: 1.2rem; }
+    .sd-detail-time { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.1em; color: #074485; margin: 0 0 3px; }
+    .sd-detail-title { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 500; color: #1a1a1a; margin: 0 0 5px; }
+    .sd-detail-desc { font-size: 13px; font-weight: 300; color: #444; line-height: 1.6; margin: 0 0 3px; }
+    .sd-detail-loc { font-size: 11px; color: #888; margin: 0; font-style: italic; }
+    .sd-list { border-top: 0.5px solid #d8d8d8; columns: 2; column-gap: 1.5rem; column-fill: auto; }
+    .sd-list-item { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; border-bottom: 0.5px solid #ede9e2; cursor: pointer; break-inside: avoid; }
+    .sd-list-item.active .sd-list-time, .sd-list-item.active .sd-list-name { color: #074485; }
+    .sd-list-time { font-family: 'Cinzel', serif; font-size: 10px; color: #999; letter-spacing: 0.05em; white-space: nowrap; transition: color 0.2s; }
+    .sd-list-name { font-family: 'Cinzel', serif; font-size: 10px; color: #333; line-height: 1.3; transition: color 0.2s; }
+
+    /* ════════════════════════════════
+       7. FAQ
+    ════════════════════════════════ */
+    .faq-inner { font-family: 'Source Sans Pro', sans-serif; max-width: 680px; margin: 0 auto; padding: 0 1rem; }
+    .faq-item { border-top: 0.5px solid #d8d8d8; }
+    .faq-item:last-child { border-bottom: 0.5px solid #d8d8d8; }
+    .faq-question { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 0; cursor: pointer; user-select: none; }
+    .faq-question-text { font-family: 'Cinzel', serif; font-size: clamp(0.85rem, 2vw, 1rem); font-weight: 400; letter-spacing: 0.04em; color: #074485; line-height: 1.4; margin: 0; }
+    .faq-icon { flex-shrink: 0; width: 18px; height: 18px; position: relative; }
+    .faq-icon::before, .faq-icon::after { content: ''; position: absolute; background: #074485; border-radius: 1px; transition: transform 0.3s ease, opacity 0.3s ease; }
+    .faq-icon::before { width: 18px; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+    .faq-icon::after { width: 1px; height: 18px; left: 50%; top: 0; transform: translateX(-50%); }
+    .faq-item.open .faq-icon::after { transform: translateX(-50%) rotate(90deg); opacity: 0; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .faq-item.open .faq-answer { max-height: 400px; }
+    .faq-answer-inner { padding: 0 0 1.2rem 0; font-size: 15px; font-weight: 300; line-height: 1.8; color: #222; }
+
+    /* ════════════════════════════════
+       8. COUNTDOWN
+    ════════════════════════════════ */
+    .cd-wrap { padding: 3rem 1rem 2.5rem; text-align: center; background: #faf9f6; border-bottom: 0.5px solid #d8d8d8; }
+    .cd-title { font-family: 'Cinzel', serif; font-size: clamp(1.1rem, 2.5vw, 1.6rem); font-weight: 400; letter-spacing: 0.12em; color: #1a1a1a; margin: 0 0 0.3rem; }
+    .cd-subtitle { font-family: 'Source Sans Pro', sans-serif; font-size: 13px; font-weight: 300; letter-spacing: 0.08em; color: #999; margin: 0 0 2rem; }
+    .cd-units { display: flex; justify-content: center; align-items: flex-start; gap: 1.2rem; flex-wrap: nowrap; }
+    .cd-unit { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .cd-digits { display: flex; gap: 4px; }
+    .cd-digit-wrap { position: relative; width: 52px; height: 68px; perspective: 200px; }
+    .cd-card { position: absolute; inset: 0; background: #fff; border: 0.5px solid #d8d8d8; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 2.2rem; font-weight: 400; color: #1a1a1a; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .cd-card.peel { transform-origin: bottom center; animation: pagefall 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+    @keyframes pagefall { 0% { transform: rotateX(0deg) translateY(0px); opacity: 1; } 40% { transform: rotateX(-20deg) translateY(4px); opacity: 1; } 100% { transform: rotateX(-90deg) translateY(40px) scaleY(0.3); opacity: 0; } }
+    .cd-label { font-family: 'Source Sans Pro', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: 0.1em; color: #aaa; text-transform: uppercase; }
+    .cd-sep { font-family: 'Cinzel', serif; font-size: 2rem; color: #d8d8d8; margin-top: 6px; line-height: 68px; }
+
+    /* ════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════ */
+    @media (max-width: 700px) {
+      .postcard-layout { flex-direction: column; align-items: center; padding: 2rem 1.25rem 3rem; min-height: unset; gap: 2.5rem; perspective: none; }
+      .invite-panel { max-width: 100%; transform: translateY(20px); padding-top: 1.5rem; }
+      .invite-panel.visible { transform: translateY(0); }
+    }
+    @media (max-width: 680px) {
+      .sd-main { flex-direction: column; align-items: center; gap: 0; }
+      .sd-dial-col { flex: none; width: 100%; max-width: 360px; }
+      .sd-info-col { width: 100%; padding-top: 1rem; }
+      .sd-detail { text-align: center; }
+    }
+    @media (max-width: 560px) {
+      .cd-units { gap: 0.3rem; }
+      .cd-digit-wrap { width: 28px; height: 42px; }
+      .cd-card { font-size: 1.2rem; }
+      .cd-digits { gap: 2px; }
+      .cd-sep { font-size: 1rem; line-height: 42px; }
+      .cd-label { font-size: 9px; letter-spacing: 0.05em; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════ LOGO ════════ -->
+  <h1 class="site-logo">Cam &amp; Gem</h1>
+
+  <!-- ════════ 1. POSTCARD ════════ -->
+  <div id="sec-postcard">
+    <div class="postcard-layout">
+      <div class="postcard-scene">
+        <div class="postcard-scene__inner">
+          <p class="got-mail" id="gotMail">you've got mail<span class="got-mail__dot"></span><span class="got-mail__dot"></span><span class="got-mail__dot"></span></p>
+          <div class="postcard" id="postcard">
+            <div class="postcard__face postcard__face--front">
+              <img src="https://www.dropbox.com/scl/fi/t4wyk1voru8vatkz1xjh1/postcard-front.jpg?rlkey=aka3qmf1rg88s8l7k65tttz4s&st=08g20slt&dl=1" alt="Wedding postcard front" loading="eager" />
+            </div>
+            <div class="postcard__face postcard__face--back">
+              <img src="https://www.dropbox.com/scl/fi/4cqgsfi8zxspohfpo6ekm/postcard-back.jpg?rlkey=5ukgmq8z442tjdkbb22y8fwh8&st=8rckv647&dl=1" alt="Wedding postcard back" loading="eager" />
+            </div>
+          </div>
+          <p class="postcard-hint" id="postcard-hint">click to flip</p>
+        </div>
+      </div>
+      <div class="invite-panel" id="invitePanel">
+        <h1 class="wedding-heading">We're Getting Married!</h1>
+        <div class="invite-section">
+          <p class="invite-body">We are so excited to invite you to celebrate this special day with us. Our ceremony will take place at St. Anne's Church followed by a Picnic reception in the Church's Gated Garden. We have planned a version of our perfect day filled with church, family, friends, food, &amp; more. We cannot wait to share it with you.</p>
+          <div class="invite-details">
+            <div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">June 20, 2026</span></div>
+            <div class="detail-row"><span class="detail-label">Time</span><span class="detail-value">12:00pm</span></div>
+            <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value">St. Anne's Church, E14 8HH</span></div>
+            <div class="detail-row"><span class="detail-label">Reception</span><span class="detail-value">Picnic in the Gated Garden</span></div>
+          </div>
+          <a class="directions-btn" href="https://maps.app.goo.gl/6kfBurghQ1daQck59" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            Get directions
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 2. POLAROID ════════ -->
+  <div class="pol-section reveal" id="sec-polaroid" style="padding-top:2rem;">
+    <div class="pol-text-block">
+      <h2 class="section-heading">Our Story So Far</h2>
+      <div class="pol-divider"></div>
+      <p class="pol-body">July 21st 2024 — After a brief introduction the previous week, we by chance sat next to one another during refreshments after the church service on Sunday. We had been in the same room every week for a whole year without meeting. There was a spark from the first conversation, we went on our first date 2 days later, became official 3 weeks after that and spent a lot of time together over the next months. Below are some of our favourite memories so far...</p>
+    </div>
+    <div class="polaroid-section" id="polaroidSection">
+      <div class="deck-viewport" id="deckViewport"></div>
+      <div class="pol-dots" id="polaroidDots"></div>
+      <div class="swipe-hint" id="swipeHint">
+        <div class="p-arrow left"><span></span></div>
+        swipe to view more
+        <div class="p-arrow"><span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 3. SUNDIAL ════════ -->
+  <div class="section-wrap reveal" id="sec-sundial">
+    <div class="sd-inner">
+      <h2 class="section-heading">The Day</h2>
+      <div class="section-divider"></div>
+      <div class="sd-main">
+        <div class="sd-dial-col">
+          <div class="sd-dial-wrap">
+            <svg id="sdSvg" viewBox="-20 -20 380 380" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <clipPath id="sdDialClip"><circle cx="170" cy="170" r="130"/></clipPath>
+                <filter id="shadowFilter" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="2" dy="3" stdDeviation="4" flood-color="rgba(20,10,0,0.5)"/>
+                </filter>
+              </defs>
+              <image href="https://www.dropbox.com/scl/fi/stwlw73525wv3ln9ne4hs/sundial.png?rlkey=9pul5f59bkkc5xco81bqdb4ks&st=413zfjvz&raw=1" x="40" y="40" width="260" height="260" clip-path="url(#sdDialClip)" preserveAspectRatio="xMidYMid slice"/>
+              <circle cx="170" cy="170" r="130" fill="none" stroke="#c4a96a" stroke-width="1.5"/>
+              <polygon id="sdShadow" points="170,170 164,50 176,50" fill="rgba(35,20,5,0.5)" filter="url(#shadowFilter)" stroke="none"/>
+              <circle cx="170" cy="170" r="8" fill="#c4a96a" stroke="#a08030" stroke-width="1"/>
+              <g id="sdMarkers"></g>
+            </svg>
+          </div>
+          <div class="sd-hint" id="sdHint">tap a time to learn more<div class="h-arrow"><span></span></div></div>
+        </div>
+        <div class="sd-info-col">
+          <div id="sdDetail" class="sd-detail">
+            <p class="sd-detail-time" id="sdDetailTime"></p>
+            <p class="sd-detail-title" id="sdDetailTitle"></p>
+            <p class="sd-detail-desc" id="sdDetailDesc"></p>
+            <p class="sd-detail-loc" id="sdDetailLoc"></p>
+          </div>
+          <div class="sd-list" id="sdListEl"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 4. TRAVEL ════════ -->
+  <div class="section-wrap reveal" id="sec-travel">
+    <div class="tab-inner">
+      <h2 class="section-heading">Getting Here</h2>
+      <div class="section-divider"></div>
+      <div class="tab-tabs">
+        <div class="tab-tab active" id="trTab0" onclick="trSelect(0)">
+          <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+          By Car
+        </div>
+        <div class="tab-tab" id="trTab1" onclick="trSelect(1)">
+          <svg viewBox="0 0 24 24"><path d="M8 6v6m8-6v6M3 12h18M6 18h.01M18 18h.01"/><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 6V4a1 1 0 011-1h10a1 1 0 011 1v2"/></svg>
+          By Bus
+        </div>
+        <div class="tab-tab" id="trTab2" onclick="trSelect(2)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/></svg>
+          By Tube / DLR
+        </div>
+      </div>
+      <div id="trPanel0" class="tab-panel active"><p class="tab-body">The church is located at the junction of <strong>Commercial Road (A13)</strong> and <strong>Three Colt Street</strong>. Please note that there is <strong>limited on-site parking</strong> at the venue. Pay-and-display parking is available on surrounding side streets, but we highly recommend using public transport or a taxi/Uber to ensure a stress-free arrival.</p></div>
+      <div id="trPanel1" class="tab-panel"><p class="tab-body">Several bus routes stop directly outside or very near the church at the <strong>'St Anne's Church' stop</strong>. You can take the <strong>15</strong> (from Central London/Tower Hill), the <strong>115</strong>, or the <strong>D3</strong>.</p><div class="tab-note">The 15 route is particularly scenic as it uses the historic heritage path!</div></div>
+      <div id="trPanel2" class="tab-panel"><p class="tab-body">The nearest station is <strong>Westferry (DLR)</strong>, which is a short 5-minute walk from the church. Alternatively, you can take the <strong>Jubilee Line</strong> or <strong>Elizabeth Line</strong> to <strong>Canary Wharf</strong>, then either walk (approx. 15 minutes) or hop on the DLR for one stop to Westferry.</p></div>
+    </div>
+  </div>
+
+  <!-- ════════ 5. DRESS CODE ════════ -->
+  <div class="section-wrap reveal" id="sec-dresscode">
+    <div class="tab-inner">
+      <h2 class="section-heading">Dress Code</h2>
+      <div class="section-divider"></div>
+      <div class="tab-tabs">
+        <div class="tab-tab active" id="dcTab0" onclick="dcSelect(0)">
+          <svg viewBox="0 0 24 24"><path d="M12 2L8 7H4l2 5-3 4h6l3 6 3-6h6l-3-4 2-5h-4z"/></svg>
+          The Vibe
+        </div>
+        <div class="tab-tab" id="dcTab1" onclick="dcSelect(1)">
+          <svg viewBox="0 0 24 24"><path d="M20.38 8.57l-1.23 1.85a8 8 0 01-.22 7.58H5.07A8 8 0 0115.58 6.85l1.85-1.23A10 10 0 003.35 19a2 2 0 001.72 1h13.85a2 2 0 001.74-1 10 10 0 00-.27-10.44z"/><path d="M10.59 15.41a2 2 0 002.83 0l5.66-8.49-8.49 5.66a2 2 0 000 2.83z"/></svg>
+          For Him
+        </div>
+        <div class="tab-tab" id="dcTab2" onclick="dcSelect(2)">
+          <svg viewBox="0 0 24 24"><path d="M12 2c-1.5 0-3 .5-3 2v1H7l-2 4v2h2v9a2 2 0 002 2h6a2 2 0 002-2v-9h2V9l-2-4h-2V4c0-1.5-1.5-2-3-2z"/></svg>
+          For Her
+        </div>
+      </div>
+      <div id="dcPanel0" class="tab-panel active"><p class="tab-body">We're going for a <strong>Smart Casual / Garden Party</strong> feel — think elegant but relaxed. We want everyone to feel comfortable and enjoy the day, so please dress in a way that reflects the occasion without being too formal. Light, summery colours and breathable fabrics are encouraged — it's June in London, after all!</p><div class="tab-note">The reception will take place in the <strong>Gated Garden</strong> at St Anne's Church, so please bear in mind you will be on grass for much of the afternoon.</div></div>
+      <div id="dcPanel1" class="tab-panel"><p class="tab-body">A smart suit or blazer with trousers works perfectly — a tie is entirely optional. Light colours such as cream, navy, sage or tan are a great fit for the garden party atmosphere. Avoid very casual items like jeans or trainers.</p><div class="tab-note"><strong>Suggested:</strong> Linen or cotton suit, chinos with a blazer, loafers or smart shoes.</div></div>
+      <div id="dcPanel2" class="tab-panel"><p class="tab-body">A midi or maxi dress, a smart jumpsuit, or a skirt and blouse would be ideal. Florals, pastels and earthy tones all work beautifully for a summer garden party. Please feel free to wear colour — the brighter the better!</p><div class="tab-note"><strong>One small note:</strong> as the reception is on grass, we'd gently suggest leaving the stilettos at home — block heels, wedges or flats will keep you much more comfortable through the afternoon!</div></div>
+    </div>
+  </div>
+
+  <!-- ════════ 6. REGISTRY ════════ -->
+  <div class="section-wrap reveal" id="sec-registry">
+    <div class="tab-inner">
+      <h2 class="section-heading">Registry</h2>
+      <div class="section-divider"></div>
+      <div class="tab-tabs">
+        <div class="tab-tab active" id="rgTab0" onclick="rgSelect(0)">
+          <svg viewBox="0 0 24 24"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+          Wish List
+        </div>
+        <div class="tab-tab" id="rgTab1" onclick="rgSelect(1)">
+          <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+          Bank Transfer
+        </div>
+        <div class="tab-tab" id="rgTab2" onclick="rgSelect(2)">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><circle cx="12" cy="14" r="2"/></svg>
+          Cash Gift
+        </div>
+      </div>
+      <div id="rgPanel0" class="tab-panel active"><p class="tab-body">After request to bless us with a gift, we put together a list of pieces that would help us settle into our new home when we get married.</p><a class="tab-link" href="https://www.johnlewis.com/wish-list" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Visit John Lewis Wish List</a></div>
+      <div id="rgPanel1" class="tab-panel"><p class="tab-body">Want to bless us without the faff — we appreciate you!</p><div class="tab-note"><strong>Sort code</strong> &nbsp; 00-00-00<br><strong>Account number</strong> &nbsp; 12345678</div></div>
+      <div id="rgPanel2" class="tab-panel"><p class="tab-body">If you would instead prefer to bless us with cash, please bring an envelope to the wedding and hand it to a member of the bridal party.</p></div>
+    </div>
+  </div>
+
+  <!-- ════════ 7. FAQ ════════ -->
+  <div class="section-wrap reveal" id="sec-faq">
+    <div class="faq-inner">
+      <h2 class="section-heading">FAQ</h2>
+      <div class="section-divider"></div>
+      <div class="faq-item" id="faq0"><div class="faq-question" onclick="faqToggle(0)"><p class="faq-question-text">Is there a wedding registry?</p><div class="faq-icon"></div></div><div class="faq-answer"><div class="faq-answer-inner">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div>
+      <div class="faq-item" id="faq1"><div class="faq-question" onclick="faqToggle(1)"><p class="faq-question-text">Are children allowed at the wedding?</p><div class="faq-icon"></div></div><div class="faq-answer"><div class="faq-answer-inner">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div>
+      <div class="faq-item" id="faq2"><div class="faq-question" onclick="faqToggle(2)"><p class="faq-question-text">What is the parking situation at the venue?</p><div class="faq-icon"></div></div><div class="faq-answer"><div class="faq-answer-inner">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div>
+      <div class="faq-item" id="faq3"><div class="faq-question" onclick="faqToggle(3)"><p class="faq-question-text">Can I bring a plus one?</p><div class="faq-icon"></div></div><div class="faq-answer"><div class="faq-answer-inner">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div>
+      <div class="faq-item" id="faq4"><div class="faq-question" onclick="faqToggle(4)"><p class="faq-question-text">Will there be food for dietary requirements?</p><div class="faq-icon"></div></div><div class="faq-answer"><div class="faq-answer-inner">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div>
+      <div class="faq-item" id="faq5"><div class="faq-question" onclick="faqToggle(5)"><p class="faq-question-text">What time should I arrive?</p><div class="faq-icon"></div></div><div class="faq-answer"><div class="faq-answer-inner">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div>
+      <div class="faq-item" id="faq6"><div class="faq-question" onclick="faqToggle(6)"><p class="faq-question-text">Where is the nearest hotel?</p><div class="faq-icon"></div></div><div class="faq-answer"><div class="faq-answer-inner">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div>
+    </div>
+  </div>
+
+  <!-- ════════ 8. COUNTDOWN ════════ -->
+  <div class="cd-wrap reveal" id="sec-countdown" style="padding-top:3rem;">
+    <p class="cd-title">The Countdown</p>
+    <p class="cd-subtitle">20 June 2026 &mdash; St Anne's Church, Limehouse</p>
+    <div class="cd-units">
+      <div class="cd-unit"><div class="cd-digits"><div class="cd-digit-wrap"><div class="cd-card" id="d0">0</div></div><div class="cd-digit-wrap"><div class="cd-card" id="d1">0</div></div></div><span class="cd-label">Days</span></div>
+      <div class="cd-sep">·</div>
+      <div class="cd-unit"><div class="cd-digits"><div class="cd-digit-wrap"><div class="cd-card" id="h0">0</div></div><div class="cd-digit-wrap"><div class="cd-card" id="h1">0</div></div></div><span class="cd-label">Hours</span></div>
+      <div class="cd-sep">·</div>
+      <div class="cd-unit"><div class="cd-digits"><div class="cd-digit-wrap"><div class="cd-card" id="m0">0</div></div><div class="cd-digit-wrap"><div class="cd-card" id="m1">0</div></div></div><span class="cd-label">Minutes</span></div>
+      <div class="cd-sep">·</div>
+      <div class="cd-unit"><div class="cd-digits"><div class="cd-digit-wrap"><div class="cd-card" id="s0">0</div></div><div class="cd-digit-wrap"><div class="cd-card" id="s1">0</div></div></div><span class="cd-label">Seconds</span></div>
+    </div>
+  </div>
+
+  <script>
+  /* ── SCROLL REVEAL ── */
+  (function() {
+    var els = document.querySelectorAll('.reveal');
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0 });
+    els.forEach(function(el) { obs.observe(el); });
+  })();
+
+  /* ── POSTCARD ── */
+  (function() {
+    var card = document.getElementById('postcard');
+    var hint = document.getElementById('postcard-hint');
+    var panel = document.getElementById('invitePanel');
+    var gotMail = document.getElementById('gotMail');
+    var currentAngle = 0, isFlipped = false, isAnimating = false;
+    function startAnimation() {
+      gotMail.classList.add('got-mail--visible');
+      setTimeout(function() {
+        gotMail.classList.remove('got-mail--visible');
+        card.style.animation = 'pc-glide-in 1.2s cubic-bezier(0.22,1,0.36,1) forwards';
+        card.addEventListener('animationend', function onAnim(e) {
+          if (e.animationName === 'pc-glide-in') {
+            card.style.opacity = '1';
+            setTimeout(function() { card.style.animation = 'pc-flip-reveal 1s cubic-bezier(0.4,0,0.2,1) forwards'; panel.classList.add('visible'); }, 1000);
+          }
+          if (e.animationName === 'pc-flip-reveal') {
+            card.removeEventListener('animationend', onAnim);
+            card.style.animation = ''; currentAngle = 180;
+            card.style.transform = 'rotateY(180deg)';
+            card.style.transition = 'transform 0.9s cubic-bezier(0.4,0,0.2,1)';
+            card.classList.add('postcard--interactive'); isFlipped = true;
+            hint.classList.add('postcard-hint--visible');
+            document.body.classList.remove('locked');
+          }
+        });
+      }, 2000);
+    }
+    window.addEventListener('load', function() { document.body.classList.add('locked'); setTimeout(startAnimation, 250); });
+    card.addEventListener('click', function() {
+      if (!card.classList.contains('postcard--interactive') || isAnimating) return;
+      isAnimating = true; currentAngle = isFlipped ? 0 : 180;
+      card.style.transform = 'rotateY(' + currentAngle + 'deg)'; isFlipped = !isFlipped;
+      setTimeout(function() { isAnimating = false; }, 900);
+    });
+    card.addEventListener('mouseenter', function() { if (card.classList.contains('postcard--interactive')) hint.classList.add('postcard-hint--visible'); });
+    card.addEventListener('mouseleave', function() { hint.classList.remove('postcard-hint--visible'); });
+  })();
+
+  /* ── POLAROID ── */
+  (function() {
+    var cards = [
+      { caption: "Pumpkin Patch",          src: "https://www.dropbox.com/scl/fi/hghjqfacvl7bx07yh4ug3/polaroid-1.jpg?rlkey=8rgy2joylbqac21lbuepb6r8d&st=sml541qs&raw=1" },
+      { caption: "Working at The Beehive", src: "https://www.dropbox.com/scl/fi/mjv04l6womyyi3fn4t170/polaroid-2.jpg?rlkey=fiunbn5i23l50xzxafl02m6x5&st=e0tdev9l&raw=1" },
+      { caption: "Soaking in the Sun",     src: "https://www.dropbox.com/scl/fi/yr6ohcxbomyl33pejrp3n/polaroid-3.jpg?rlkey=jzrt5r6re9fl0ts9lg6plyxdb&st=stpr1cyn&raw=1" },
+      { caption: "Engaged!",               src: "https://www.dropbox.com/scl/fi/bv5hxq2262lw9qpwzwtq1/polaroid-4.jpg?rlkey=ct3nprq4ry3r0vol0rupp8cz5&st=6n1hydmi&raw=1" },
+      { caption: "Running for the Tube",   src: "https://www.dropbox.com/scl/fi/kp5uxvj0dx3t2yt9zk8tu/polaroid-5.jpg?rlkey=7yj3xsx2ahvkis7dq8nyuo5e5&st=yonb37q1&raw=1" },
+    ];
+    var rotations = [-4,2,-2,5,-1], offsets = [{x:0,y:0},{x:3,y:-3},{x:-4,y:2},{x:2,y:-2},{x:-2,y:4}];
+    var viewport = document.getElementById('deckViewport'), dotsEl = document.getElementById('polaroidDots'), hintEl = document.getElementById('swipeHint');
+    var polSection = document.getElementById('sec-polaroid');
+    var current = 0, isDragging = false, startX = 0, dragDelta = 0, cardEls = [], animated = false;
+    function buildDeck() {
+      viewport.innerHTML = ''; cardEls = []; dotsEl.innerHTML = '';
+      cards.forEach(function(c,i) {
+        var card = document.createElement('div'); card.className = 'polaroid-card';
+        card.innerHTML = '<div class="photo"><img src="'+c.src+'" alt="'+c.caption+'" draggable="false" loading="lazy"></div><div class="caption">'+c.caption+'</div>';
+        viewport.appendChild(card); cardEls.push(card);
+        var dot = document.createElement('div'); dot.className = 'dot'+(i===0?' active':''); dotsEl.appendChild(dot);
+      });
+      layoutCards();
+    }
+    function layoutCards(dragOffset) {
+      dragOffset = dragOffset||0; var n=cards.length;
+      cardEls.forEach(function(el,i) {
+        var rel=(i-current+n)%n, behindCount=rel<=Math.floor(n/2)?rel:rel-n, zIndex=n-Math.abs(behindCount);
+        var rot=rotations[i%rotations.length], tx=offsets[i%offsets.length].x, ty=offsets[i%offsets.length].y, scale=1;
+        if(behindCount<0||behindCount>2){el.style.zIndex=0;el.style.transform='translateX(0px) rotate('+rot+'deg) scale(0.88)';el.style.opacity=0;return;}
+        if(behindCount===0){tx+=dragOffset;rot+=dragOffset*0.04;}
+        else if(behindCount===1){tx+=6;ty+=6;scale=0.955;}
+        else if(behindCount===2){tx+=12;ty+=12;scale=0.91;}
+        el.style.zIndex=zIndex; el.style.transform='translate('+tx+'px,'+ty+'px) rotate('+rot+'deg) scale('+scale+')'; el.style.opacity=1;
+      });
+    }
+    function updateDots(){Array.from(dotsEl.children).forEach(function(d,i){d.classList.toggle('active',i===current);});}
+    function advance(dir) {
+      var top=cardEls[current]; top.classList.remove('is-dragging'); top.classList.add(dir>0?'fly-left':'fly-right');
+      setTimeout(function(){top.classList.remove('fly-left','fly-right');current=dir>0?(current+1)%cards.length:(current-1+cards.length)%cards.length;layoutCards();updateDots();},380);
+    }
+    function onDown(e){isDragging=true;startX=e.clientX!==undefined?e.clientX:e.touches[0].clientX;dragDelta=0;cardEls[current].classList.add('is-dragging');}
+    function onMove(e){if(!isDragging)return;var x=e.clientX!==undefined?e.clientX:e.touches[0].clientX;dragDelta=x-startX;layoutCards(dragDelta);}
+    function onUp(){if(!isDragging)return;isDragging=false;cardEls[current].classList.remove('is-dragging');if(Math.abs(dragDelta)>60){advance(dragDelta<0?1:-1);}else{layoutCards(0);}dragDelta=0;}
+    viewport.addEventListener('mousedown',onDown); window.addEventListener('mousemove',onMove); window.addEventListener('mouseup',onUp);
+    viewport.addEventListener('touchstart',function(e){onDown(e);},{passive:true}); window.addEventListener('touchmove',function(e){onMove(e);},{passive:true}); window.addEventListener('touchend',onUp);
+    function animateCardsIn() {
+      if(animated)return;animated=true;
+      cardEls.forEach(function(el,i){el.style.transition='none';el.style.transform='translateY(80px) rotate('+rotations[i]+'deg) scale(0.88)';el.style.opacity='0';});
+      requestAnimationFrame(function(){
+        cardEls.forEach(function(el,i){setTimeout(function(){el.style.transition='transform 0.6s cubic-bezier(0.34,1.26,0.64,1), opacity 0.45s ease';layoutCards();},i*80);});
+        setTimeout(function(){dotsEl.classList.add('visible');hintEl.classList.add('visible');},500);
+      });
+    }
+    buildDeck();
+    var polObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){setTimeout(animateCardsIn,600);polObs.disconnect();}
+    },{threshold:0});
+    polObs.observe(polSection);
+  })();
+
+  /* ── SUNDIAL ── */
+  (function() {
+    var events = [
+      {time:"11:30am",title:"Guest Arrivals",desc:"Please arrive at St Anne's Church. Ushers will be on hand to welcome you and show you to your seats.",loc:"St Anne's Church, Limehouse"},
+      {time:"12:00pm",title:"Wedding Ceremony",desc:"The ceremony begins. Please be seated by 11:50am.",loc:"St Anne's Church (Main Church)"},
+      {time:"1:30pm",title:"Picnic Reception",desc:"After the ceremony, you will be guided to the gated garden where a picnic reception awaits. Enjoy food, drinks and good company.",loc:"St Anne's Church (Gated Garden)"},
+      {time:"3:00pm",title:"Speeches",desc:"Get your glasses ready — it's time for the speeches!",loc:"St Anne's Church (Gated Garden)"},
+      {time:"3:45pm",title:"Cake Cutting",desc:"Cam & Gem cut the wedding cake and it's time for sweet treats!",loc:"St Anne's Church (Gated Garden)"},
+      {time:"4:30pm",title:"First Dance",desc:"Let's celebrate! Join Cam & Gem on the dancefloor.",loc:"St Anne's Church (Gated Garden)"},
+      {time:"6:30pm",title:"Bride & Groom Exit",desc:"Time to say goodbye to our newlyweds!",loc:"St Anne's Church (Main Church)"},
+      {time:"7:30pm",title:"Private Family Dinner",desc:"The family & bridal party will join Cam & Gem for a private dinner before the honeymoon.",loc:"Star of the East"},
+    ];
+    var hourAngles = {9:-41,10:-25,11:-12,12:0,13:12,14:25,15:41,16:62,17:90,18:125,19:145};
+    function parseHour24(t){var m=t.match(/(\d+):(\d+)(am|pm)/i),h=parseInt(m[1]),min=parseInt(m[2]),ap=m[3].toLowerCase();if(ap==='pm'&&h!==12)h+=12;if(ap==='am'&&h===12)h=0;return h+min/60;}
+    function interp(h24){var lo=Math.floor(h24),hi=Math.ceil(h24),fr=h24-lo,aLo=hourAngles[lo],aHi=hourAngles[hi];if(aLo===undefined&&aHi===undefined)return 0;if(aLo===undefined)return aHi;if(aHi===undefined)return aLo;return aLo+(aHi-aLo)*fr;}
+    function svgAngle(sd){return sd-90;}
+    function aXY(ang,r){var rad=ang*Math.PI/180;return{x:170+r*Math.cos(rad),y:170+r*Math.sin(rad)};}
+    var shadow=document.getElementById('sdShadow'),markersG=document.getElementById('sdMarkers'),listEl=document.getElementById('sdListEl'),sdHint=document.getElementById('sdHint'),sdSec=document.getElementById('sec-sundial'),cur=0;
+    function buildMarkers(){
+      markersG.innerHTML='';
+      events.forEach(function(ev,i){
+        var sd=interp(parseHour24(ev.time)),svg=svgAngle(sd),dot=aXY(svg,148),lbl=aXY(svg,165);
+        var g=document.createElementNS('http://www.w3.org/2000/svg','g');g.style.cursor='pointer';
+        var c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+        c.setAttribute('cx',dot.x);c.setAttribute('cy',dot.y);c.setAttribute('r','6');
+        c.setAttribute('fill',i===0?'#074485':'#fff');c.setAttribute('stroke',i===0?'#074485':'#c4a96a');c.setAttribute('stroke-width','1.5');c.id='sdDot'+i;g.appendChild(c);
+        var anchor=sd>5?'start':(sd<-5?'end':'middle');
+        var tx=document.createElementNS('http://www.w3.org/2000/svg','text');
+        tx.setAttribute('x',lbl.x);tx.setAttribute('y',lbl.y+4);tx.setAttribute('text-anchor',anchor);
+        tx.setAttribute('font-family','Cinzel,serif');tx.setAttribute('font-size','8');
+        tx.setAttribute('fill',i===0?'#074485':'#7a6a50');tx.setAttribute('letter-spacing','0.03em');
+        tx.id='sdTx'+i;tx.textContent=ev.time;g.appendChild(tx);
+        g.addEventListener('click',function(){selEv(i);});markersG.appendChild(g);
+      });
+    }
+    function buildList(){
+      listEl.innerHTML='';
+      events.forEach(function(ev,i){
+        var item=document.createElement('div');item.id='sdItem'+i;item.className='sd-list-item'+(i===0?' active':'');
+        item.innerHTML='<span class="sd-list-time" id="sdIT'+i+'">'+ev.time+'</span><span class="sd-list-name" id="sdIN'+i+'">'+ev.title+'</span>';
+        item.addEventListener('click',function(){selEv(i);});listEl.appendChild(item);
+      });
+      listEl.style.height=(Math.ceil(events.length/2)*31)+'px';
+    }
+    function selEv(i){
+      cur=i;
+      for(var j=0;j<events.length;j++){
+        var d=document.getElementById('sdDot'+j),t=document.getElementById('sdTx'+j),ti=document.getElementById('sdIT'+j),ni=document.getElementById('sdIN'+j),it=document.getElementById('sdItem'+j);
+        if(d){d.setAttribute('fill',j===i?'#074485':'#fff');d.setAttribute('stroke',j===i?'#074485':'#c4a96a');}
+        if(t)t.setAttribute('fill',j===i?'#074485':'#7a6a50');
+        if(ti)ti.style.color=j===i?'#074485':'#999';
+        if(ni)ni.style.color=j===i?'#074485':'#333';
+        if(it)it.className='sd-list-item'+(j===i?' active':'');
+      }
+      shadow.setAttribute('transform','rotate('+interp(parseHour24(events[i].time))+' 170 170)');
+      var ev=events[i];
+      document.getElementById('sdDetailTime').textContent=ev.time;
+      document.getElementById('sdDetailTitle').textContent=ev.title;
+      document.getElementById('sdDetailDesc').textContent=ev.desc;
+      document.getElementById('sdDetailLoc').textContent=ev.loc;
+    }
+    buildMarkers();buildList();selEv(0);
+    var sdObs=new IntersectionObserver(function(entries){if(entries[0].isIntersecting){setTimeout(function(){sdHint.classList.add('visible');},800);sdObs.disconnect();}},{threshold:0});
+    sdObs.observe(sdSec);
+  })();
+
+  /* ── TAB HELPERS ── */
+  function trSelect(i){for(var j=0;j<3;j++){document.getElementById('trTab'+j).classList.toggle('active',j===i);document.getElementById('trPanel'+j).classList.toggle('active',j===i);}}
+  function dcSelect(i){for(var j=0;j<3;j++){document.getElementById('dcTab'+j).classList.toggle('active',j===i);document.getElementById('dcPanel'+j).classList.toggle('active',j===i);}}
+  function rgSelect(i){for(var j=0;j<3;j++){document.getElementById('rgTab'+j).classList.toggle('active',j===i);document.getElementById('rgPanel'+j).classList.toggle('active',j===i);}}
+
+  /* ── FAQ ── */
+  function faqToggle(i){var item=document.getElementById('faq'+i),isOpen=item.classList.contains('open');for(var j=0;j<7;j++)document.getElementById('faq'+j).classList.remove('open');if(!isOpen)item.classList.add('open');}
+
+  /* ── COUNTDOWN ── */
+  (function(){
+    var target=new Date('2026-06-20T12:00:00'),ids=['d0','d1','h0','h1','m0','m1','s0','s1'],prev=['','','','','','','',''];
+    function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
+    function animDigit(id,v){var el=document.getElementById(id);if(!el)return;var old=document.createElement('div');old.className='cd-card peel';old.textContent=el.textContent;el.parentNode.appendChild(old);el.textContent=v;setTimeout(function(){if(old.parentNode)old.parentNode.removeChild(old);},520);}
+    function tick(){
+      var now=new Date(),diff=Math.max(0,target-now);
+      var d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+      var vals=[pad(d)[0],pad(d)[1],pad(h)[0],pad(h)[1],pad(m)[0],pad(m)[1],pad(s)[0],pad(s)[1]];
+      vals.forEach(function(v,i){if(v!==prev[i]){animDigit(ids[i],v);prev[i]=v;}});
+    }
+    tick();setInterval(tick,1000);
+  })();
+  </script>
+
+</body>
+</html>

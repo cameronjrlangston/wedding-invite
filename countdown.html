@@ -107,11 +107,13 @@
       line-height: 68px;
     }
 
-    @media (max-width: 400px) {
-      .cd-digit-wrap { width: 42px; height: 56px; }
-      .cd-card { font-size: 1.8rem; }
-      .cd-sep { font-size: 1.5rem; }
-      .cd-units { gap: 0.7rem; }
+    @media (max-width: 480px) {
+      .cd-units { gap: 0.4rem; flex-wrap: nowrap; }
+      .cd-digit-wrap { width: 32px; height: 48px; }
+      .cd-card { font-size: 1.4rem; }
+      .cd-digits { gap: 2px; }
+      .cd-sep { font-size: 1.2rem; line-height: 48px; }
+      .cd-label { font-size: 10px; }
     }
   </style>
 </head>

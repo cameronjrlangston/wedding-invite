@@ -719,7 +719,17 @@
     }
     tick();setInterval(tick,1000);
   })();
+
+  /* ── IFRAME HEIGHT REPORTER ── */
+  function reportHeight() {
+   var h = document.body.scrollHeight;
+   window.parent.postMessage({ iframeHeight: h }, '*');
+  }
+  reportHeight();
+  setInterval(reportHeight, 500);
+  window.addEventListener('load', reportHeight);
   </script>
+  
 
 </body>
 </html>

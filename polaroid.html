@@ -122,44 +122,48 @@
   <script>
     (function() {
       var cards = [
-        { caption: "Trip to Hastings",        src: "https://www.dropbox.com/scl/fi/qms4w943tnlc2b12mr3c7/1-Trip-to-Hastings.jpg?rlkey=htyody1csp9zbzv09pye9m75g&st=ghqxcnkb&dl=1" },
-        { caption: "Workin at The Beehive",   src: "https://www.dropbox.com/scl/fi/gau3x19c3ix0v7euvdna6/2-Workin-at-The-Beehive.jpg?rlkey=4woxgec4shvzwcecbcr0y9n0j&st=yx5aimzo&dl=1" },
-        { caption: "Pumpkin Huntin",          src: "https://www.dropbox.com/scl/fi/0girmnilvlh0fgrqvw4iq/3-Pumpkin-Huntin.jpg?rlkey=d2kkz4qaqqd665aj6x2xglros&st=7trvi0vb&dl=1" },
-        { caption: "Runnin for the Tube",     src: "https://www.dropbox.com/scl/fi/f7kdu4ct07n8dqa8kfmnc/4-Runnin-for-the-Tube.jpg?rlkey=tz28nhwn2lrxv2tskqqew90ce&st=tjimyspn&dl=1" },
-        { caption: "Coffee Shoppin",          src: "https://www.dropbox.com/scl/fi/h7gd1rm2og9117s6t982e/5-Coffee-Shoppin.jpg?rlkey=t7vigruxmvaru7vnylp795t7g&st=bujsirx3&dl=1" },
-        { caption: "Winter Wonderlandin",     src: "https://www.dropbox.com/scl/fi/vbei517oczz7j4in8exa1/6-Winter-Wonderlandin.jpg?rlkey=3psgays85w4fllnbjg5up5nfk&st=z33l1okj&dl=1" },
-        { caption: "Cycling to Richmond Park",src: "https://www.dropbox.com/scl/fi/l1uyguiagc0dii7agupy4/7-Cycling-to-Richmond-Park.jpg?rlkey=p7jfe7o1njh9scjb04t3fythd&st=zqj3desq&dl=1" },
-        { caption: "Valentine's Day",         src: "https://www.dropbox.com/scl/fi/i67kj1x27eziyg3hww199/8-Valentine-s-Day.jpg?rlkey=z1f6ueok47r7alsthmfaigwwi&st=wk2sxpdt&dl=1" },
-        { caption: "Picnicking",              src: "https://www.dropbox.com/scl/fi/0c2865uuxrujwbiemx4fb/9-Picnicking.jpg?rlkey=l1cf7s75v7vtdym2k7iu8x50u&st=09ckzt9v&dl=1" },
-        { caption: "Tubin",                   src: "https://www.dropbox.com/scl/fi/pycy8borj37i6t1mzs5gs/10-Tubin.jpg?rlkey=4u29nwytvexgr7omu3hoioljy&st=f74uqslj&dl=1" },
-        { caption: "Proposing",               src: "https://www.dropbox.com/scl/fi/bn09lc5h21xt31xyhzozv/11-Proposing.jpg?rlkey=qq2u6cj90cqzg039rdcqeurmh&st=twyukw0p&dl=1" },
-        { caption: "Getting Engaged",         src: "https://www.dropbox.com/scl/fi/m1gx4rl5c6weyvofiaevo/12-Getting-Engaged.jpg?rlkey=fja1z0ihcn1hl9w14mf2fxjls&st=aws9hvyw&dl=1" },
-        { caption: "WOOO",                    src: "https://www.dropbox.com/scl/fi/y1s2ctqe5j8imm7iowsx6/13-WOOO.jpg?rlkey=pte8zkrmvfp5xie5zr2i3t1oi&st=y7a4hguf&dl=1" },
-        { caption: "More WOO",                src: "https://www.dropbox.com/scl/fi/8nxlq386ta5zrvhrluz32/14-More-WOO.jpg?rlkey=m9jg5gs017gcwjxtlqlf9p3j6&st=sgh3wgd6&dl=1" },
-        { caption: "Hiking at Seven Sisters", src: "https://www.dropbox.com/scl/fi/wuchbymz9j284bnjz9chs/15-Hiking-at-Seven-Sisters.jpg?rlkey=rea1snov2cjedozyqtxcx5pz6&st=22fdouey&dl=1" },
-        { caption: "Shoppin",                 src: "https://www.dropbox.com/scl/fi/uggenb02pie578wcu2uei/16-Shoppin.jpg?rlkey=jjk3fd2g74gmjgogo8aie4cqm&st=xji563ol&dl=1" },
-        { caption: "Choccin",                 src: "https://www.dropbox.com/scl/fi/18fkxd0cj6ymcdl4wl7bp/17-Choccin.jpg?rlkey=gzom2ucoikjr6txzvqb1j8tb6&st=tgqtsvg4&dl=1" },
-        { caption: "GYM",                     src: "https://www.dropbox.com/scl/fi/v6q1mv6pbg0a9dy92kzo8/18-GYM.jpg?rlkey=a60102cf6fvkwat2r4pugcegt&st=99un1he1&dl=1" },
-        { caption: "Darts with Friends",      src: "https://www.dropbox.com/scl/fi/wc7cueto3n0vwo4zhmk31/19-Darts-with-Friends.jpg?rlkey=r1ywof4gimcawalpe78x16nbu&st=4rj4jt7s&dl=1" },
-        { caption: "Giggin",                  src: "https://www.dropbox.com/scl/fi/g7aefq87gjj3cxt8detf3/20-Giggin.jpg?rlkey=3gu099ymp239iac1imhbmlkzv&st=vthqmu0w&dl=1" },
-        { caption: "Cone of Chipsn",          src: "https://www.dropbox.com/scl/fi/cn0s0q8eb2sy61zlexcel/21-Cone-of-Chipsn.jpg?rlkey=qouk3bf5a0klhnxx9pcdban8x&st=rvsk30rr&dl=1" },
-        { caption: "Wedding Guestin",         src: "https://www.dropbox.com/scl/fi/zhe7va01hh3w89wgd854n/22-Wedding-Guestin.jpg?rlkey=s59nr27rf4viqnq83vgrwrvz7&st=tdldtwm5&dl=1" },
-        { caption: "Posin",                   src: "https://www.dropbox.com/scl/fi/ezm83mkhmnnozk5ulg6s6/23-Posin.jpg?rlkey=wbwd3il6n09zpnk4kfr1bxf1r&st=z07hwiys&dl=1" },
+        { caption: "Trip to Hastings",         src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/1%20Trip%20to%20Hastings.jpg" },
+        { caption: "Workin at The Beehive",    src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/2%20Workin'%20at%20The%20Beehive.jpg" },
+        { caption: "Pumpkin Huntin",           src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/3%20Pumpkin%20Huntin'.jpg" },
+        { caption: "Runnin for the Tube",      src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/4%20Runnin'%20for%20the%20Tube.jpg" },
+        { caption: "Coffee Shoppin",           src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/5%20Coffee%20Shoppin'.jpg" },
+        { caption: "Winter Wonderlandin",      src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/6%20Winter%20Wonderlandin'.jpg" },
+        { caption: "Cycling to Richmond Park", src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/7%20Cycling%20to%20Richmond%20Park.jpg" },
+        { caption: "Valentine's Day",          src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/8%20Valentine's%20Day.jpg" },
+        { caption: "Picnicking",               src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/9%20Picnicking.jpg" },
+        { caption: "Tubin",                    src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/10%20Tubin'.jpg" },
+        { caption: "Proposing",                src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/11%20Proposing.jpg" },
+        { caption: "Getting Engaged",          src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/12%20Getting%20Engaged!.jpg" },
+        { caption: "WOOO",                     src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/13%20WOOO!.jpg" },
+        { caption: "More WOO",                 src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/14%20More%20WOO!.jpg" },
+        { caption: "Hiking at Seven Sisters",  src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/15%20Hiking%20at%20Seven%20Sisters.jpg" },
+        { caption: "Shoppin",                  src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/16%20Shoppin'.jpg" },
+        { caption: "Choccin",                  src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/17%20Choccin'.jpg" },
+        { caption: "GYM",                      src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/18%20GYM.jpg" },
+        { caption: "Darts with Friends",       src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/19%20Darts%20with%20Friends.jpg" },
+        { caption: "Giggin",                   src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/20%20Giggin'.jpg" },
+        { caption: "Cone of Chipsn",           src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/21%20Cone%20of%20Chipsn'.jpg" },
+        { caption: "Wedding Guestin",          src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/22%20Wedding%20Guestin'.jpg" },
+        { caption: "Posin",                    src: "https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/3f79b185eabcb4789fb1ca1ad06c76b9f9cd1a29/23%20Posin'.jpg" },
       ];
 
-      var rotations  = [-4, 2, -2, 5, -1, 3, -3, 4, -1, 2, -4, 1, -2, 5, -3, 2, -1, 4, -2, 3, -4, 1, -3];
-      var offsets    = [
+      var rotations = [-4, 2, -2, 5, -1, 3, -3, 4, -1, 2, -4, 1, -2, 5, -3, 2, -1, 4, -2, 3, -4, 1, -3];
+      var offsets   = [
         {x:0,y:0},{x:3,y:-3},{x:-4,y:2},{x:2,y:-2},{x:-2,y:4},
         {x:4,y:-1},{x:-3,y:3},{x:1,y:-4},{x:-1,y:2},{x:3,y:-1},
         {x:-2,y:3},{x:4,y:-2},{x:-3,y:1},{x:2,y:-3},{x:-4,y:2},
         {x:1,y:-1},{x:-2,y:4},{x:3,y:-3},{x:-1,y:2},{x:4,y:-2},
         {x:-3,y:1},{x:2,y:-4},{x:-1,y:3}
       ];
+
       var viewport   = document.getElementById('deckViewport');
       var dotsEl     = document.getElementById('polaroidDots');
       var hintEl     = document.getElementById('swipeHint');
       var polSection = document.getElementById('polSection');
+      var n = cards.length;
       var current = 0, isDragging = false, startX = 0, dragDelta = 0, cardEls = [], animated = false;
+
+      function mod(i) { return ((i % n) + n) % n; }
 
       function buildDeck() {
         viewport.innerHTML = ''; cardEls = []; dotsEl.innerHTML = '';
@@ -167,65 +171,119 @@
           var card = document.createElement('div');
           card.className = 'polaroid-card';
           card.innerHTML = '<div class="photo"><img src="' + c.src + '" alt="' + c.caption + '" draggable="false"></div><div class="caption">' + c.caption + '</div>';
-          viewport.appendChild(card); cardEls.push(card);
+          viewport.appendChild(card);
+          cardEls.push(card);
           var dot = document.createElement('div');
           dot.className = 'dot' + (i === 0 ? ' active' : '');
           dotsEl.appendChild(dot);
         });
-        layoutCards();
+        layoutCards(0, 0);
       }
 
-      function layoutCards(dragOffset) {
-        dragOffset = dragOffset || 0;
-        var n = cards.length;
+      // dragDir: 1 = dragging left (going forward), -1 = dragging right (going back), 0 = idle
+      function layoutCards(dragOffset, dragDir) {
+        var peek1 = dragDir >= 0 ? mod(current + 1) : mod(current - 1);
+        var peek2 = dragDir >= 0 ? mod(current + 2) : mod(current - 2);
+
         cardEls.forEach(function(el, i) {
-          var rel = (i - current + n) % n;
-          var behindCount = rel <= Math.floor(n/2) ? rel : rel - n;
-          var zIndex = n - Math.abs(behindCount);
           var rot = rotations[i % rotations.length];
-          var tx = offsets[i % offsets.length].x;
-          var ty = offsets[i % offsets.length].y;
-          var scale = 1, opacity = 1;
-          if (behindCount < 0 || behindCount > 2) { el.style.zIndex=0; el.style.transform='translateX(0px) rotate('+rot+'deg) scale(0.88)'; el.style.opacity=0; return; }
-          if (behindCount === 0) { tx += dragOffset; rot += dragOffset * 0.04; }
-          else if (behindCount === 1) { tx+=6; ty+=6; scale=0.955; }
-          else if (behindCount === 2) { tx+=12; ty+=12; scale=0.91; }
-          el.style.zIndex = zIndex;
-          el.style.transform = 'translate('+tx+'px,'+ty+'px) rotate('+rot+'deg) scale('+scale+')';
-          el.style.opacity = opacity;
+          var ox  = offsets[i % offsets.length].x;
+          var oy  = offsets[i % offsets.length].y;
+
+          if (i === current) {
+            el.style.zIndex    = n + 2;
+            el.style.transform = 'translate(' + (ox + dragOffset) + 'px,' + oy + 'px) rotate(' + (rot + dragOffset * 0.04) + 'deg) scale(1)';
+            el.style.opacity   = '1';
+          } else if (i === peek1) {
+            el.style.zIndex    = n + 1;
+            el.style.transform = 'translate(' + (ox + 6) + 'px,' + (oy + 6) + 'px) rotate(' + rot + 'deg) scale(0.955)';
+            el.style.opacity   = '1';
+          } else if (i === peek2) {
+            el.style.zIndex    = n;
+            el.style.transform = 'translate(' + (ox + 12) + 'px,' + (oy + 12) + 'px) rotate(' + rot + 'deg) scale(0.91)';
+            el.style.opacity   = '1';
+          } else {
+            el.style.zIndex    = '0';
+            el.style.transform = 'rotate(' + rot + 'deg) scale(0.88)';
+            el.style.opacity   = '0';
+          }
         });
       }
 
-      function updateDots() { Array.from(dotsEl.children).forEach(function(d,i){ d.classList.toggle('active', i===current); }); }
+      function updateDots() {
+        Array.from(dotsEl.children).forEach(function(d, i) {
+          d.classList.toggle('active', i === current);
+        });
+      }
 
       function advance(direction) {
         var top = cardEls[current];
         top.classList.remove('is-dragging');
         top.classList.add(direction > 0 ? 'fly-left' : 'fly-right');
         setTimeout(function() {
-          top.classList.remove('fly-left','fly-right');
-          current = direction > 0 ? (current+1)%cards.length : (current-1+cards.length)%cards.length;
-          layoutCards(); updateDots();
+          top.classList.remove('fly-left', 'fly-right');
+          current = mod(current + direction);
+          layoutCards(0, 0);
+          updateDots();
         }, 380);
       }
 
-      function onPointerDown(e) { isDragging=true; startX=e.clientX!==undefined?e.clientX:e.touches[0].clientX; dragDelta=0; cardEls[current].classList.add('is-dragging'); }
-      function onPointerMove(e) { if(!isDragging)return; var x=e.clientX!==undefined?e.clientX:e.touches[0].clientX; dragDelta=x-startX; layoutCards(dragDelta); }
-      function onPointerUp() { if(!isDragging)return; isDragging=false; cardEls[current].classList.remove('is-dragging'); if(Math.abs(dragDelta)>60){advance(dragDelta<0?1:-1);}else{layoutCards(0);} dragDelta=0; }
+      function getX(e) {
+        return e.clientX !== undefined ? e.clientX : e.touches[0].clientX;
+      }
+
+      function onPointerDown(e) {
+        isDragging = true;
+        startX = getX(e);
+        dragDelta = 0;
+        cardEls[current].classList.add('is-dragging');
+      }
+
+      function onPointerMove(e) {
+        if (!isDragging) return;
+        dragDelta = getX(e) - startX;
+        var dir = dragDelta < 0 ? 1 : (dragDelta > 0 ? -1 : 0);
+        layoutCards(dragDelta, dir);
+      }
+
+      function onPointerUp() {
+        if (!isDragging) return;
+        isDragging = false;
+        cardEls[current].classList.remove('is-dragging');
+        if (Math.abs(dragDelta) > 60) {
+          advance(dragDelta < 0 ? 1 : -1);
+        } else {
+          layoutCards(0, 0);
+        }
+        dragDelta = 0;
+      }
 
       viewport.addEventListener('mousedown', onPointerDown);
       window.addEventListener('mousemove', onPointerMove);
       window.addEventListener('mouseup', onPointerUp);
-      viewport.addEventListener('touchstart', function(e){onPointerDown(e);},{passive:true});
-      window.addEventListener('touchmove', function(e){onPointerMove(e);},{passive:true});
+      viewport.addEventListener('touchstart', function(e) { onPointerDown(e); }, { passive: true });
+      window.addEventListener('touchmove',    function(e) { onPointerMove(e); }, { passive: true });
       window.addEventListener('touchend', onPointerUp);
 
       function animateCardsIn() {
-        if(animated)return; animated=true;
-        cardEls.forEach(function(el,i){ el.style.transition='none'; el.style.transform='translateY(80px) rotate('+rotations[i]+'deg) scale(0.88)'; el.style.opacity='0'; });
+        if (animated) return;
+        animated = true;
+        cardEls.forEach(function(el, i) {
+          el.style.transition = 'none';
+          el.style.transform  = 'translateY(80px) rotate(' + rotations[i] + 'deg) scale(0.88)';
+          el.style.opacity    = '0';
+        });
         requestAnimationFrame(function() {
-          cardEls.forEach(function(el,i){ setTimeout(function(){ el.style.transition='transform 0.6s cubic-bezier(0.34,1.26,0.64,1), opacity 0.45s ease'; layoutCards(); },i*80); });
-          setTimeout(function(){ dotsEl.classList.add('visible'); hintEl.classList.add('visible'); },500);
+          cardEls.forEach(function(el, i) {
+            setTimeout(function() {
+              el.style.transition = 'transform 0.6s cubic-bezier(0.34,1.26,0.64,1), opacity 0.45s ease';
+              layoutCards(0, 0);
+            }, i * 80);
+          });
+          setTimeout(function() {
+            dotsEl.classList.add('visible');
+            hintEl.classList.add('visible');
+          }, 500);
         });
       }
 

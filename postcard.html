@@ -9,8 +9,6 @@
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; overflow-x: hidden; }
 
-    body.locked { overflow: hidden; height: 100vh; }
-
     .wedding-layout {
       display: flex;
       flex-direction: row;
@@ -71,32 +69,6 @@
 
     .postcard-hint--visible { opacity: 1; }
 
-    .got-mail {
-      position: absolute; top: 60%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 12px; color: #999; font-family: sans-serif;
-      letter-spacing: 0.04em; opacity: 0; transition: opacity 0.5s ease;
-      pointer-events: none; user-select: none;
-      white-space: nowrap; display: flex; align-items: baseline; gap: 0; margin: 0;
-    }
-
-    .got-mail--visible { opacity: 1; }
-
-    @keyframes dot-fade {
-      0%, 80%, 100% { opacity: 0; }
-      40% { opacity: 1; }
-    }
-
-    .got-mail__dot {
-      display: inline-block; width: 1.2px; height: 1.2px;
-      border-radius: 50%; background: #999; margin-left: 3px;
-      vertical-align: baseline; position: relative; top: -1px;
-      animation: dot-fade 1.2s infinite ease-in-out;
-    }
-
-    .got-mail__dot:nth-child(2) { animation-delay: 0.4s; }
-    .got-mail__dot:nth-child(3) { animation-delay: 0.8s; }
-
     .invite-panel {
       font-family: 'Source Sans Pro', sans-serif; max-width: 420px;
       opacity: 0; transform: translateX(24px);
@@ -150,12 +122,6 @@
   <div class="wedding-layout">
     <div class="postcard-scene">
       <div class="postcard-scene__inner">
-        <p class="got-mail" id="gotMail">
-          you've got mail
-          <span class="got-mail__dot"></span>
-          <span class="got-mail__dot"></span>
-          <span class="got-mail__dot"></span>
-        </p>
         <div class="postcard" id="postcard">
           <div class="postcard__face postcard__face--front">
             <img src="https://raw.githubusercontent.com/cameronjrlangston/wedding-invite/f6ca5274ce23d0448d0f9f72680b10fafa2255a5/postcard-front.jpg" alt="Wedding postcard front" />
@@ -196,48 +162,38 @@
       var card    = document.getElementById('postcard');
       var hint    = document.getElementById('postcard-hint');
       var panel   = document.getElementById('invitePanel');
-      var gotMail = document.getElementById('gotMail');
-      var currentAngle = 0, isFlipped = false, isAnimating = false;
+      var isFlipped = false, isAnimating = false;
 
       function startAnimation() {
-        gotMail.classList.add('got-mail--visible');
-        setTimeout(function() {
-          gotMail.classList.remove('got-mail--visible');
-          card.style.animation = 'pc-glide-in 1.2s cubic-bezier(0.22,1,0.36,1) forwards';
-          card.addEventListener('animationend', function onAnim(e) {
-            if (e.animationName === 'pc-glide-in') {
-              card.style.opacity = '1';
-              setTimeout(function() {
-                card.style.animation = 'pc-flip-reveal 1s cubic-bezier(0.4,0,0.2,1) forwards';
-                panel.classList.add('visible');
-              }, 1000);
-            }
-            if (e.animationName === 'pc-flip-reveal') {
-              card.removeEventListener('animationend', onAnim);
-              card.style.animation = '';
-              currentAngle = 180;
-              card.style.transform = 'rotateY(180deg)';
-              card.style.transition = 'transform 0.9s cubic-bezier(0.4,0,0.2,1)';
-              card.classList.add('postcard--interactive');
-              isFlipped = true;
-              hint.classList.add('postcard-hint--visible');
-              document.body.classList.remove('locked');
-            }
-          });
-        }, 2000);
+        card.style.animation = 'pc-glide-in 1.2s cubic-bezier(0.22,1,0.36,1) forwards';
+
+        card.addEventListener('animationend', function onAnim(e) {
+          if (e.animationName === 'pc-glide-in') {
+            card.style.opacity = '1';
+            card.style.animation = 'pc-flip-reveal 1s cubic-bezier(0.4,0,0.2,1) forwards';
+            panel.classList.add('visible');
+          }
+          if (e.animationName === 'pc-flip-reveal') {
+            card.removeEventListener('animationend', onAnim);
+            card.style.animation = '';
+            card.style.transform = 'rotateY(180deg)';
+            card.style.transition = 'transform 0.9s cubic-bezier(0.4,0,0.2,1)';
+            card.classList.add('postcard--interactive');
+            isFlipped = true;
+            hint.classList.add('postcard-hint--visible');
+          }
+        });
       }
 
       window.addEventListener('load', function() {
-        document.body.classList.add('locked');
-        setTimeout(startAnimation, 250);
+        requestAnimationFrame(startAnimation);
       });
 
       card.addEventListener('click', function() {
         if (!card.classList.contains('postcard--interactive') || isAnimating) return;
         isAnimating = true;
-        currentAngle = isFlipped ? 0 : 180;
-        card.style.transform = 'rotateY(' + currentAngle + 'deg)';
         isFlipped = !isFlipped;
+        card.style.transform = 'rotateY(' + (isFlipped ? 180 : 0) + 'deg)';
         setTimeout(function() { isAnimating = false; }, 900);
       });
 

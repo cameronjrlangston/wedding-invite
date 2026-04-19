@@ -13,7 +13,7 @@
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 0.9s ease, transform 0.9s ease;
-      padding: 0 0 2rem 0;
+      padding: 0 0 1rem 0;
       border-bottom: 0.5px solid #d8d8d8;
       overflow: hidden;
     }
@@ -22,7 +22,7 @@
 
     .sd-inner {
       font-family: 'Source Sans Pro', sans-serif;
-      max-width: 860px;
+      max-width: 520px;
       margin: 0 auto;
       padding: 0 1.5rem;
     }
@@ -38,32 +38,30 @@
     .sd-divider {
       width: 40px; height: 0.5px;
       background: #d8d8d8;
-      margin: 1rem auto 1.5rem;
+      margin: 0.5rem auto 0.8rem;
     }
 
     .sd-main {
       display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 2.5rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
     }
 
     .sd-dial-col {
-      flex: 0 0 360px;
+      width: 100%;
       max-width: 360px;
     }
 
     .sd-info-col {
-      flex: 1;
-      min-width: 0;
-      padding-top: 0.5rem;
+      width: 100%;
+      padding-top: 1rem;
     }
 
-    /* Extra padding around SVG so labels at top don't clip */
     .sd-dial-wrap {
       position: relative;
       width: 100%;
-      padding: 28px 28px 16px 28px;
+      padding: 8px 28px 4px 28px;
     }
 
     .sd-dial-wrap svg { display: block; width: 100%; overflow: visible; }
@@ -97,11 +95,10 @@
       transform: rotate(45deg);
     }
 
-    /* Fixed 3-line height detail card */
     .sd-detail {
       height: 120px;
       overflow: hidden;
-      text-align: left;
+      text-align: center;
       padding: 0.75rem 0;
       border-top: 0.5px solid #d8d8d8;
       border-bottom: 0.5px solid #d8d8d8;
@@ -114,7 +111,6 @@
     .sd-detail-desc  { font-size: 13px; font-weight: 300; color: #444; line-height: 1.6; margin: 0 0 3px; }
     .sd-detail-loc   { font-size: 11px; color: #888; margin: 0; font-style: italic; }
 
-    /* List: flow down first column, then second */
     .sd-list {
       border-top: 0.5px solid #d8d8d8;
       columns: 2;
@@ -137,13 +133,6 @@
 
     .sd-list-time { font-family: 'Cinzel', serif; font-size: 10px; color: #999; letter-spacing: 0.05em; white-space: nowrap; transition: color 0.2s; }
     .sd-list-name { font-family: 'Cinzel', serif; font-size: 10px; color: #333; line-height: 1.3; transition: color 0.2s; }
-
-    @media (max-width: 680px) {
-      .sd-main { flex-direction: column; align-items: center; gap: 0; }
-      .sd-dial-col { flex: none; width: 100%; max-width: 360px; }
-      .sd-info-col { width: 100%; padding-top: 1rem; }
-      .sd-detail { text-align: center; }
-    }
   </style>
 </head>
 <body>
@@ -158,7 +147,7 @@
 
         <div class="sd-dial-col">
           <div class="sd-dial-wrap">
-            <svg id="sdSvg" viewBox="-20 -20 380 380" xmlns="http://www.w3.org/2000/svg">
+            <svg id="sdSvg" viewBox="0 -10 340 360" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <clipPath id="sdDialClip"><circle cx="170" cy="170" r="130"/></clipPath>
                 <filter id="shadowFilter" x="-50%" y="-50%" width="200%" height="200%">
@@ -173,14 +162,11 @@
 
               <circle cx="170" cy="170" r="130" fill="none" stroke="#c4a96a" stroke-width="1.5"/>
 
-              <!-- Gnomon shadow polygon, rotated by JS -->
               <polygon id="sdShadow"
                 points="170,170 164,50 176,50"
                 fill="rgba(35,20,5,0.5)"
                 filter="url(#shadowFilter)"
                 stroke="none"/>
-
-
 
               <g id="sdMarkers"></g>
             </svg>
@@ -220,21 +206,6 @@
       { time:"7:30pm",  title:"Private Family Dinner", desc:"The immediate family & bridal party will have a private dinner to spend some time together before the honeymoon. Invite sent seperately.", loc:"Star of the East Pub - Upstairs Room" },
     ];
 
-    /*
-      Sundial angle mapping based on the provided reference table.
-      The sundial uses non-linear hour angles (not 30deg/hr like a clock).
-      Reference angles from noon (top of dial = 0deg):
-        12:00 =   0 deg
-         1:00 =  12 deg right
-         2:00 =  25 deg right
-         3:00 =  41 deg right
-         4:00 =  62 deg right
-         5:00 =  90 deg right  (horizontal)
-         6:00 = 125 deg right  (bottom corner)
-        11:00 = -12 deg (left of noon)
-        10:00 = -25 deg
-         9:00 = -41 deg
-    */
     var hourAngles = {
       9:  -41,
       10: -25,
@@ -260,34 +231,18 @@
     }
 
     function interpolateAngle(h24) {
-      /* Find surrounding integer hours and interpolate */
       var hLow  = Math.floor(h24);
       var hHigh = Math.ceil(h24);
       var frac  = h24 - hLow;
-
       var aLow  = hourAngles[hLow];
       var aHigh = hourAngles[hHigh];
-
       if (aLow === undefined && aHigh === undefined) return 0;
       if (aLow  === undefined) return aHigh;
       if (aHigh === undefined) return aLow;
-
       return aLow + (aHigh - aLow) * frac;
     }
 
-    /* Convert sundial angle (degrees from noon, positive = right/PM)
-       to SVG rotation angle.
-       Noon = top of circle = -90deg in standard SVG math.
-       So SVG angle = sundialAngle - 90  ... but we use rotate() on the
-       shadow which already rotates around the centre, so we just pass
-       the sundial angle directly. */
     function sundialAngleToSVG(sdAngle) {
-      /* In our SVG coordinate system:
-         0deg = right (3 o'clock position)
-         -90deg = top (noon)
-         So to point to noon: rotate = -90
-         To point to 1pm (12deg from noon): rotate = -90 + 12 = -78
-      */
       return sdAngle - 90;
     }
 
@@ -299,7 +254,6 @@
       };
     }
 
-    var cx = 170, cy = 170;
     var dotR   = 148;
     var labelR = 165;
     var shadow   = document.getElementById('sdShadow');
@@ -307,7 +261,6 @@
     var listEl   = document.getElementById('sdListEl');
     var sdSection= document.getElementById('sdSection');
     var sdHint   = document.getElementById('sdHint');
-    var current  = 0;
 
     function buildMarkers() {
       markersG.innerHTML = '';
@@ -321,7 +274,6 @@
         var g = document.createElementNS('http://www.w3.org/2000/svg','g');
         g.style.cursor = 'pointer';
 
-        /* dot */
         var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
         dot.setAttribute('cx', dotPos.x); dot.setAttribute('cy', dotPos.y);
         dot.setAttribute('r', '6');
@@ -331,7 +283,6 @@
         dot.id = 'sdDot' + i;
         g.appendChild(dot);
 
-        /* label — anchor based on left/right of dial */
         var anchor = sdAngle > 5 ? 'start' : (sdAngle < -5 ? 'end' : 'middle');
         var tx = document.createElementNS('http://www.w3.org/2000/svg','text');
         tx.setAttribute('x', labelPos.x);
@@ -362,20 +313,15 @@
         item.addEventListener('click', function() { selectEvent(i); });
         listEl.appendChild(item);
       });
-      /* Set explicit height so columns fill top-to-bottom */
       listEl.style.height = (Math.ceil(events.length / 2) * 31) + 'px';
     }
 
     function updateShadow(h24) {
       var sdAngle = interpolateAngle(h24);
-      /* Shadow polygon rotates around centre (170,170).
-         The polygon points straight up by default (noon = 0deg sundial).
-         We rotate by sdAngle degrees — positive = clockwise = afternoon. */
       shadow.setAttribute('transform', 'rotate(' + sdAngle + ' 170 170)');
     }
 
     function selectEvent(i) {
-      current = i;
       for (var j = 0; j < events.length; j++) {
         var d  = document.getElementById('sdDot' + j);
         var t  = document.getElementById('sdTx' + j);
